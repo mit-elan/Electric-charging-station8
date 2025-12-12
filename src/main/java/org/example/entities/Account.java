@@ -6,6 +6,7 @@ public class Account {
     private String email;
     private String password;
 
+
     public Account(String customerID, String name, String email, String password) {
         this.customerID = customerID;
         this.name = name;
@@ -24,6 +25,8 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account " + customerID + ": " + name + ", " + email;
+        return "Name: " + name +
+                ", Email: " + email +
+                ", Password: " + password;
     }
 }
