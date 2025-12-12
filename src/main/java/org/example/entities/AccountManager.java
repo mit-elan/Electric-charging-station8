@@ -8,9 +8,12 @@ public class AccountManager {
     private static final AccountManager INSTANCE = new AccountManager();
     private final List<Account> accounts = new ArrayList<>();
 
-    private AccountManager() {}
+    private AccountManager() {
+    }
 
-    public static AccountManager getInstance() { return INSTANCE; }
+    public static AccountManager getInstance() {
+        return INSTANCE;
+    }
 
     public Account createAccount(String name, String email, String password) {
         // Simple validation
@@ -23,6 +26,25 @@ public class AccountManager {
         return account;
     }
 
+    public void createAccountWithID(String customerID, String name, String email, String password) {
+        if (customerID == null || name == null || email == null || password == null) {
+            throw new IllegalArgumentException("Account fields cannot be null");
+        }
+        Account account = new Account(customerID, name, email, password);
+        accounts.add(account);
+    }
+
+
+    public Account getAccount(String customerID) {
+        for (Account account : accounts) {
+            if (account.getCustomerID().equals(customerID)) {
+                return account;
+            }
+        }
+        return null; // return null if not found
+    }
+
+
     public Account readAccount(String customerID) {
         return accounts.stream()
                 .filter(a -> a.getCustomerID().equals(customerID))
@@ -30,7 +52,36 @@ public class AccountManager {
                 .orElse(null);
     }
 
-    public List<Account> getAccounts() { return accounts; }
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void updateAccount(String customerID, String name, String email, String password) {
+        for (Account account : accounts) {
+            if (account.getCustomerID().equals(customerID)) {
+                if (name != null) account.setName(name);
+                if (email != null) account.setEmail(email);
+                if (password != null) account.setPassword(password);
+                return; // account found and updated, exit method
+            }
+        }
+        throw new IllegalArgumentException("No account found with Customer ID: " + customerID);
+    }
+
+    public void deleteAccount(String customerID) {
+        Account accountToRemove = null;
+        for (Account account : accounts) {
+            if (account.getCustomerID().equals(customerID)) {
+                accountToRemove = account;
+                break;
+            }
+        }
+        if (accountToRemove != null) {
+            accounts.remove(accountToRemove);
+        } else {
+            throw new IllegalArgumentException("No account found with Customer ID: " + customerID);
+        }
+    }
 
     @Override
     public String toString() {
@@ -41,8 +92,13 @@ public class AccountManager {
         return sb.toString();
     }
 
-    public AccountManager clearAccounts() {
+    public void clearAccounts() {
         accounts.clear();
-        return this;
+    }
+
+    public void addAccount(Account account) {
+        accounts.add(account);
     }
 }
+
+
