@@ -20,7 +20,7 @@ Feature: Read Account
 
   # Scenario for multiple accounts (admin view)
   Scenario: View multiple accounts' information
-    When
+    When the following accounts are created:
       | Name          | Email             | Password |
       | Alice Smith   | alice@mail.com    | pw1      |
       | Bob Johnson   | bob@mail.com      | pw2      |
