@@ -50,10 +50,7 @@ classDiagram
         name : string
         email : string
         password : string
-    }
-
-    class Credit {
-        amount : integer
+        credit : double
     }
 
     class Location {
@@ -99,13 +96,12 @@ classDiagram
     ElectricFillingStationNetwork "1" --> "1" InvoiceManager
 
 AccountManager "1" o--> "*" Account
-CreditManager "1" o--> "*" Credit
+CreditManager "1" o--> "*" Account
 LocationManager "1" o--> "*" Location
 ChargingPointManager "1" o--> "*" ChargingPoint
 ChargingSessionManager "1" o--> "*" ChargingSession
 InvoiceManager "1" o--> "*" Invoice
 
-Account "1" --> "1" Credit
 Location "1" --> "*" ChargingPoint
 ChargingPoint "1" --> "0..*" ChargingSession
 Account "1" --> "0..*" ChargingSession

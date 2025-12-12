@@ -1,11 +1,10 @@
-Feature: Account
+Feature: CreateAccount
   As a customer
   I want to create an account with my personal information
   so that I can access and use the charging network.
 
   Background:
-    Given an account Manager
-
+    Given a new Account Manager
 
   Scenario: Create a single customer account
     When customer creates an account with name "Alice", email "alice@example.com", and password "pass123"

@@ -34,8 +34,15 @@ public class AccountManager {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Accounts:\n");
-        for (Account a : accounts) sb.append(a).append("\n");
+        StringBuilder sb = new StringBuilder("Account Overview:\n");
+        for (Account a : accounts) {
+            sb.append(a.toString()).append("\n");
+        }
         return sb.toString();
+    }
+
+    public AccountManager clearAccounts() {
+        accounts.clear();
+        return this;
     }
 }
