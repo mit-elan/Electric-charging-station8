@@ -1,9 +1,9 @@
-package steps;
+package AccountSteps;
 
 import io.cucumber.java.en.Given;
-import org.example.entities.AccountManager;
+import org.example.managers.AccountManager;
 
-public class SystemSteps {
+public class AccountSystemSteps {
 
 
     @Given("a new Account Manager")

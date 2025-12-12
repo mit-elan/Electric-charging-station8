@@ -1,4 +1,6 @@
-package org.example.entities;
+package org.example.managers;
+
+import org.example.entities.Account;
 
 import java.util.ArrayList;
 import java.util.List;

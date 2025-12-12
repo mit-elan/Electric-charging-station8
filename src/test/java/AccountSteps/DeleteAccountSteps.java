@@ -1,11 +1,10 @@
-package steps;
+package AccountSteps;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import org.example.entities.Account;
-import org.example.entities.AccountManager;
+import org.example.managers.AccountManager;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.List;

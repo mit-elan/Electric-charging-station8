@@ -1,7 +1,7 @@
 package org.example;
 
 import org.example.entities.Account;
-import org.example.entities.AccountManager;
+import org.example.managers.AccountManager;
 
 public class ElectricFillingStationNetwork {
 

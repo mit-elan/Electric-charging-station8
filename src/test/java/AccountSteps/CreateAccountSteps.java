@@ -1,7 +1,7 @@
-package steps;
+package AccountSteps;
 
 import org.example.entities.Account;
-import org.example.entities.AccountManager;
+import org.example.managers.AccountManager;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;

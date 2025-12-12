@@ -21,15 +21,14 @@ classDiagram
     class LocationManager {
         locations : Location [*]
         +createLocation()
-        +readLocation()
-        +updateLocation()
+        +updateLocationPricing()
         +deleteLocation()
+        +monitorLocationNetwork()
     }
 
     class ChargingPointManager {
         chargingPoints : ChargingPoint [*]
         +createChargingPoint()
-        +readChargingPoint()
         +updateChargingPoint()
         +deleteChargingPoint()
     }
@@ -38,6 +37,7 @@ classDiagram
         chargingSessions : ChargingSession [*]
         +createChargingSession()
         +readChargingSession()
+        +endCharingSession()
     }
 
     class InvoiceManager {

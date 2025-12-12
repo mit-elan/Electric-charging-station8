@@ -1,11 +1,11 @@
-package steps;
+package AccountSteps;
 
 import io.cucumber.datatable.DataTable;
 import org.example.entities.Account;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import org.example.entities.AccountManager;
+import org.example.managers.AccountManager;
 
 import java.util.List;
 import java.util.Map;
