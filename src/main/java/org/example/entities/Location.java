@@ -44,11 +44,10 @@ public class Location {
     public void setAddress(String address) { this.address = address; }
 
     public void updatePricing(String locationID, double acPrice, double dcPrice){
-
-
     }
-    public void addChargingPoint(ChargingPoint cp){
 
+    public void addChargingPoint(ChargingPoint cp){
+        chargingPoints.add(cp);
     }
 
     public List<ChargingPoint> getChargingPoints() {
