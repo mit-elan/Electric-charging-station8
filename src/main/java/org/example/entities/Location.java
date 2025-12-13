@@ -1,16 +1,17 @@
 package org.example.entities;
 
+import org.example.enums.Mode;
+
 import java.util.ArrayList;
 import java.util.List;
 
-// Note: This class is simplified for US 1.1; prices and charging points are added later.
 public class Location {
     private final String locationID;
     private String name;
     private String address;
     private double acPrice;
     private double dcPrice;
-    private List<ChargingPoint> chargingPoints = new ArrayList<>();
+    private static List<ChargingPoint> chargingPoints = new ArrayList<>();
 
     public Location(String locationID, String name, String address) {
         if (locationID == null || name == null || address == null) {
@@ -43,10 +44,20 @@ public class Location {
     public void setName(String name) { this.name = name; }
     public void setAddress(String address) { this.address = address; }
 
-    public void updatePricing(String locationID, double acPrice, double dcPrice){
+    public void setPricing(double acPrice, double dcPrice) {
+        setAcPrice(acPrice);
+        setDcPrice(dcPrice);
+
+        for (ChargingPoint chargingPoint : chargingPoints) {
+            if (chargingPoint.getMode() == Mode.AC) {
+                chargingPoint.setPrice(acPrice);
+            } else if (chargingPoint.getMode() == Mode.DC) {
+                chargingPoint.setPrice(dcPrice);
+            }
+        }
     }
 
-    public void addChargingPoint(ChargingPoint cp){
+    public static void addChargingPoint(ChargingPoint cp){
         chargingPoints.add(cp);
     }
 
