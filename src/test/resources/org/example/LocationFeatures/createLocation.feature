@@ -1,6 +1,6 @@
 Feature: Add New Location
   As an Operator
-  I want to add a new Location
+  I want to create a new Location
   so that I can expand the Charging Network.
 
   Background:

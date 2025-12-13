@@ -1,6 +1,7 @@
 package org.example.managers;
 
 import org.example.entities.Account;
+import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
 
 import java.util.ArrayList;
@@ -42,20 +43,12 @@ public class LocationManager {
         return locations;
     }
 
-    // Needed for BDD cleanup in the "new Location Manager" step
-    public void clearLocations() {
-        locations.clear();
-    }
-
-    public void updatePricing(String locationID, double acPrice, double dcPrice) {
+    public void updateLocationPricing(String locationID, double acPrice, double dcPrice) {
         Location location = getLocation(locationID);
-
         if (location == null) {
             throw new IllegalArgumentException("Location not found: " + locationID);
         }
-
-        location.setAcPrice(acPrice);
-        location.setDcPrice(dcPrice);
+        location.setPricing(acPrice, dcPrice);
     }
 
     public void addLocation(Location location) {
@@ -86,4 +79,7 @@ public class LocationManager {
         return null; // return null if not found
     }
 
+    public void clearLocations() {
+        locations.clear();
+    }
 }
