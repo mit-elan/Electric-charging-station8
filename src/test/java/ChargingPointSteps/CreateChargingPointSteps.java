@@ -12,21 +12,21 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateChargingPointSteps {
+    private final LocationManager locationManager;
+    private final ChargingPointManager chargingPointManager;
 
-    private LocationManager locationManager;
-    private ChargingPointManager chargingPointManager;
-    private Location location;
-    private ChargingPoint createdChargingPoint;
-
+    // Background:
+    //    Given a new Location Manager
+    //    And a new Charging Point Manager
     public CreateChargingPointSteps() {
-        locationManager = LocationManager.getInstance();        // <-- initialize singleton
+        locationManager = LocationManager.getInstance();        // <-- initialize singleton for Location Manager
         chargingPointManager = ChargingPointManager.getInstance(); // <-- singleton for CP manager
     }
 
 
-    @Given("a Location with ID {string} and name {string} and address {string}")
+    @And("a Location with ID {string} and name {string} and address {string}")
     public void a_location_with_id_and_name_and_address(String locationID, String name, String address) {
-        location = locationManager.createLocation(locationID, name, address);
+        Location location = locationManager.createLocation(locationID, name, address);
     }
 
     @When("the Operator creates a Charging Point with ID {string}, mode {string}, at Location {string}")
@@ -44,7 +44,7 @@ public class CreateChargingPointSteps {
         assertTrue(exists, "Charging Point " + chargingPointID + " does not exist at Location " + locationID);
     }
 
-    @Then("the Charging Point with ID {string} has mode {string}")
+    @And("the Charging Point with ID {string} has mode {string}")
     public void the_charging_point_has_mode(String chargingPointID, String modeStr) {
         Mode mode = Mode.valueOf(modeStr);
         ChargingPoint cp = chargingPointManager.getChargingPoints().stream()

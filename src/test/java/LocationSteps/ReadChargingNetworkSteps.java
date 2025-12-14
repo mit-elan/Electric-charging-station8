@@ -1,5 +1,7 @@
-package org.example.steps;
+package LocationSteps;
 
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -11,43 +13,42 @@ import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReadChargingNetworkSteps {
-
-    private LocationManager locationManager;
-    private ChargingPointManager chargingPointManager;
+    private final LocationManager locationManager = LocationManager.getInstance();
+    private final ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
     private List<Location> locations;
 
+
     @Given("a Charging Network with Locations")
-    public void a_charging_network_with_locations() {
-        locationManager = LocationManager.getInstance();
-        chargingPointManager = new ChargingPointManager();
+    public void a_charging_network_with_locations(DataTable dataTable) {
 
-        Location location = locationManager.createLocation(
-                "LOC-1",
-                "Main Location",
-                "Main Address"
-        );
+        for (Map<String, String> row : dataTable.asMaps()) {
+            locationManager.createLocation(
+                    row.get("locationID"),
+                    row.get("name"),
+                    row.get("address")
+            );
+        }
     }
 
-    @Given("each Location has Charging Points")
-    public void each_location_has_charging_points() {
-        Location location = locationManager.getLocationByID("LOC-1");
+    @And("the Locations have Charging Points")
+    public void the_locations_have_charging_points(DataTable dataTable) {
 
-        chargingPointManager.createChargingPoint(
-                location,
-                "CP-AC-1",
-                Mode.AC
-        );
+        for (Map<String, String> row : dataTable.asMaps()) {
+            Location location = locationManager.getLocationByID(row.get("locationID"));
 
-        chargingPointManager.createChargingPoint(
-                location,
-                "CP-DC-1",
-                Mode.DC
-        );
+            chargingPointManager.createChargingPoint(
+                    location,
+                    row.get("chargingPointID"),
+                    Mode.valueOf(row.get("mode"))
+            );
+        }
     }
+
 
     @When("the customer reads the Charging Network")
     public void the_customer_reads_the_charging_network() {
@@ -60,7 +61,7 @@ public class ReadChargingNetworkSteps {
         assertFalse(locations.isEmpty());
     }
 
-    @Then("each Location shows its Charging Points")
+    @And("each Location shows its Charging Points")
     public void each_location_shows_its_charging_points() {
         for (Location location : locations) {
             assertNotNull(location.getChargingPoints());
@@ -68,7 +69,7 @@ public class ReadChargingNetworkSteps {
         }
     }
 
-    @Then("each Charging Point shows its price")
+    @And("each Charging Point shows its price")
     public void each_charging_point_shows_its_price() {
         for (Location location : locations) {
             for (ChargingPoint chargingPoint : location.getChargingPoints()) {
@@ -77,7 +78,7 @@ public class ReadChargingNetworkSteps {
         }
     }
 
-    @Then("each Charging Point shows its Operating Status")
+    @And("each Charging Point shows its Operating Status")
     public void each_charging_point_shows_its_operating_status() {
         for (Location location : locations) {
             for (ChargingPoint chargingPoint : location.getChargingPoints()) {

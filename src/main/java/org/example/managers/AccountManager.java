@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class AccountManager {
+    //The application uses singleton managers to represent system-wide services, and SystemSteps reset their state to guarantee isolated BDD scenarios.
     private static final AccountManager INSTANCE = new AccountManager();
     private final List<Account> accounts = new ArrayList<>();
 
@@ -17,8 +18,11 @@ public class AccountManager {
         return INSTANCE;
     }
 
+    public void clearAccounts() {
+        accounts.clear();
+    }
+
     public Account createAccount(String name, String email, String password) {
-        // Simple validation
         if (name == null || email == null || password == null) {
             throw new IllegalArgumentException("Account fields cannot be null");
         }
@@ -28,6 +32,7 @@ public class AccountManager {
         return account;
     }
 
+    //function create Account With ID for testing purposes
     public void createAccountWithID(String customerID, String name, String email, String password) {
         if (customerID == null || name == null || email == null || password == null) {
             throw new IllegalArgumentException("Account fields cannot be null");
@@ -93,14 +98,5 @@ public class AccountManager {
         }
         return sb.toString();
     }
-
-    public void clearAccounts() {
-        accounts.clear();
-    }
-
-    public void addAccount(Account account) {
-        accounts.add(account);
-    }
 }
-
 

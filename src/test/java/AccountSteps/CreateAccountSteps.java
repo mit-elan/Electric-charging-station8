@@ -12,10 +12,6 @@ public class CreateAccountSteps {
     private Account account;
     private final AccountManager accountManager = AccountManager.getInstance();
 
-// ----------------------------
-// Create Account
-// ----------------------------
-
     @When("customer creates an account with name {string}, email {string}, and password {string}")
     public void customerCreatesAccount(String name, String email, String password) {
         account = accountManager.createAccount(name, email, password);

@@ -9,13 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChargingPointManager {
-
     private static final ChargingPointManager INSTANCE = new ChargingPointManager();
     private final List<ChargingPoint> chargingPoints;
-
-    public ChargingPointManager() {
-        chargingPoints = new ArrayList<>();
-    }
 
     public static ChargingPointManager getInstance() {
         return INSTANCE;
@@ -25,13 +20,31 @@ public class ChargingPointManager {
         chargingPoints.clear();
     }
 
-    public ChargingPoint createChargingPoint(Location location, String chargingPointID, Mode mode) {
+
+    public ChargingPointManager() {
+        chargingPoints = new ArrayList<>();
+    }
+    public void createChargingPoint(Location location, String chargingPointID, Mode mode) {
         if (location == null) throw new IllegalArgumentException("Location cannot be null");
         ChargingPoint cp = new ChargingPoint(location, chargingPointID, mode);
-        location.addChargingPoint(cp);
+        Location.addChargingPoint(cp);
         chargingPoints.add(cp);
-        return cp;
     }
+
+
+    public List<ChargingPoint> getChargingPoints() {
+        return chargingPoints;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Charging Point Overview:\n");
+        for (ChargingPoint cp : chargingPoints) {
+            sb.append(cp.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
 
     public void updateChargingPoint(String chargingPointID, OperatingStatus operatingStatus) {
         for (ChargingPoint chargingPoint : chargingPoints) {
@@ -42,11 +55,8 @@ public class ChargingPointManager {
         }
     }
 
+
     public void deleteChargingPoint(String chargingPointID) {
         chargingPoints.removeIf(cp -> cp.getChargingPointID().equals(chargingPointID));
-    }
-
-    public List<ChargingPoint> getChargingPoints() {
-        return chargingPoints;
     }
 }
