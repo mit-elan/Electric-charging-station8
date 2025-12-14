@@ -1,4 +1,4 @@
-package AccountSteps;
+package org.example.AccountSteps;
 
 import org.example.entities.Account;
 import org.example.managers.AccountManager;

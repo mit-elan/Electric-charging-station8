@@ -1,4 +1,4 @@
-package AccountSteps;
+package org.example.AccountSteps;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;

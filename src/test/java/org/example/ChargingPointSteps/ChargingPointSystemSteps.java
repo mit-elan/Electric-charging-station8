@@ -1,4 +1,4 @@
-package org.example.steps;
+package org.example.ChargingPointSteps;
 
 import io.cucumber.java.en.Given;
 import org.example.managers.ChargingPointManager;

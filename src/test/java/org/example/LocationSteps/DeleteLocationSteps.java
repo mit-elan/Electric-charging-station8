@@ -1,4 +1,4 @@
-package LocationSteps;
+package org.example.LocationSteps;
 
 import io.cucumber.java.en.*;
 import org.example.entities.Location;

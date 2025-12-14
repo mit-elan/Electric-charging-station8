@@ -1,4 +1,4 @@
-package AccountSteps;
+package org.example.AccountSteps;
 
 import io.cucumber.java.en.Given;
 import org.example.managers.AccountManager;

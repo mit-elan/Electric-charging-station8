@@ -1,4 +1,4 @@
-package LocationSteps;
+package org.example.LocationSteps;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
