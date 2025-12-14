@@ -11,7 +11,7 @@ public class Location {
     private String address;
     private double acPrice;
     private double dcPrice;
-    private static List<ChargingPoint> chargingPoints = new ArrayList<>();
+    private static final List<ChargingPoint> chargingPoints = new ArrayList<>();
 
     public Location(String locationID, String name, String address) {
         if (locationID == null || name == null || address == null) {
@@ -65,7 +65,26 @@ public class Location {
         return chargingPoints;
     }
 
-    public void setChargingPoints(List<ChargingPoint> chargingPoints) {
-        this.chargingPoints = chargingPoints;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Location ")
+                .append(locationID)
+                .append(" | ")
+                .append(name)
+                .append(" | ")
+                .append(address)
+                .append("\n");
+
+        sb.append("  Charging Points:\n");
+        for (ChargingPoint cp : chargingPoints) {
+            sb.append("    ")
+                    .append(cp.toString())
+                    .append("\n");
+        }
+
+        return sb.toString();
     }
+
+
 }

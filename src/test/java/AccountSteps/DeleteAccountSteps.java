@@ -1,6 +1,7 @@
 package AccountSteps;
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -28,8 +29,6 @@ public class DeleteAccountSteps {
         }
     }
 
-    // --- WHEN Steps ---
-
     @When("the admin deletes the account with Customer ID {string}")
     public void the_admin_deletes_the_account_with_customer_id(String customerID) {
         try {
@@ -47,7 +46,7 @@ public class DeleteAccountSteps {
         Assertions.assertEquals(expectedCount, actualCount, "Expected account count to be " + expectedCount + ", but found " + actualCount);
     }
 
-    @Then("the account with Customer ID {string} does not exist")
+    @And("the account with Customer ID {string} does not exist")
     public void the_account_with_customer_id_does_not_exist(String customerID) {
         // Use the getAccount method which returns null if not found
         Assertions.assertNull(accountManager.getAccount(customerID), "Account with ID " + customerID + " should have been deleted, but was found.");

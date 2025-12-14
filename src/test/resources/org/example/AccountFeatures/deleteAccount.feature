@@ -21,3 +21,4 @@ Feature: Delete Account
       | 2001        | Clara White | clara@mail.com  | pw123    |
     When the admin deletes the account with Customer ID "9999"
     Then the total number of existing accounts is 1
+    And an exception is thrown indicating no account was found

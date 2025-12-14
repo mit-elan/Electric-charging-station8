@@ -1,6 +1,7 @@
 package AccountSteps;
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import org.example.entities.Account;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -42,12 +43,12 @@ public class ReadAccountSteps {
         assertEquals(expectedName, retrievedAccount.getName());
     }
 
-    @Then("the displayed Email is {string}")
+    @And("the displayed Email is {string}")
     public void displayedEmailIs(String expectedEmail) {
         assertEquals(expectedEmail, retrievedAccount.getEmail());
     }
 
-    @Then("the displayed Password is {string}")
+    @And("the displayed Password is {string}")
     public void displayedPasswordIs(String expectedPassword) {
         assertEquals(expectedPassword, retrievedAccount.getPassword());
     }

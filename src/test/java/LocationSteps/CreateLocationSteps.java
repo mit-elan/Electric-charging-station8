@@ -1,6 +1,7 @@
 package LocationSteps;
 
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -48,7 +49,7 @@ public class CreateLocationSteps {
     }
 
     // Dynamic Then step to check name and address
-    @Then("the Location with Location ID {string} has {word} {string}")
+    @And("the Location with Location ID {string} has {word} {string}")
     public void the_location_with_location_id_has_field_value(String locationID, String field, String expectedValue) {
         Location location = locationManager.getLocation(locationID);
         Assertions.assertNotNull(location, "Location should exist before checking details.");

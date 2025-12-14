@@ -4,7 +4,6 @@ import org.example.enums.Mode;
 import org.example.enums.OperatingStatus;
 
 public class ChargingPoint {
-
     private final Location location;
     private final String chargingPointID;
     private final Mode mode;
@@ -53,14 +52,20 @@ public class ChargingPoint {
         return price;
     }
 
-
-
     /* Only Location may change pricing */
     void setPrice(double price) {
         if (price < 0) {
             throw new IllegalArgumentException("Price cannot be negative.");
         }
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "ChargingPoint " + chargingPointID +
+                " | Mode: " + mode +
+                " | Price: " + price +
+                " | Status: " + operatingStatus;
     }
 
 }

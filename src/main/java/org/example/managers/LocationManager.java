@@ -1,13 +1,9 @@
 package org.example.managers;
 
-import org.example.entities.Account;
-import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.example.enums.Mode;
 
 
 public class LocationManager {
@@ -19,6 +15,10 @@ public class LocationManager {
 
     public static LocationManager getInstance() {
         return INSTANCE;
+    }
+
+    public void clearLocations() {
+        locations.clear();
     }
 
     public Location createLocation(String locationID, String name, String address) {
@@ -41,14 +41,6 @@ public class LocationManager {
 
     public List<Location> getAllLocations() {
         return locations;
-    }
-
-    public void updateLocationPricing(String locationID, double acPrice, double dcPrice) {
-        Location location = getLocation(locationID);
-        if (location == null) {
-            throw new IllegalArgumentException("Location not found: " + locationID);
-        }
-        location.setPricing(acPrice, dcPrice);
     }
 
     public void addLocation(Location location) {
@@ -76,10 +68,25 @@ public class LocationManager {
                 return location;
             }
         }
-        return null; // return null if not found
+        return null;
     }
 
-    public void clearLocations() {
-        locations.clear();
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Location Overview:\n");
+        for (Location location : locations) {
+            sb.append(location.toString()).append("\n");
+        }
+        return sb.toString();
     }
+
+
+    public void updateLocationPricing(String locationID, double acPrice, double dcPrice) {
+        Location location = getLocation(locationID);
+        if (location == null) {
+            throw new IllegalArgumentException("Location not found: " + locationID);
+        }
+        location.setPricing(acPrice, dcPrice);
+    }
+
 }
