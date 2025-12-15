@@ -22,12 +22,25 @@ public class Location {
         this.address = address;
     }
 
-    public String getLocationID() { return locationID; }
-    public String getName() { return name; }
-    public String getAddress() { return address; }
+    public String getLocationID() {
+        return locationID;
+    }
 
-    public double getAcPrice() { return acPrice; }
-    public double getDcPrice() { return dcPrice; }
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public double getAcPrice() {
+        return acPrice;
+    }
+
+    public double getDcPrice() {
+        return dcPrice;
+    }
 
     public void setAcPrice(double price) {
         if (price < 0) throw new IllegalArgumentException("AC price cannot be negative.");
@@ -41,8 +54,13 @@ public class Location {
 
 
     // Placeholder setters for future updates (US 1.2)
-    public void setName(String name) { this.name = name; }
-    public void setAddress(String address) { this.address = address; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public void setPricing(double acPrice, double dcPrice) {
         setAcPrice(acPrice);
@@ -57,7 +75,7 @@ public class Location {
         }
     }
 
-    public static void addChargingPoint(ChargingPoint cp){
+    public static void addChargingPoint(ChargingPoint cp) {
         chargingPoints.add(cp);
     }
 
@@ -77,14 +95,17 @@ public class Location {
                 .append("\n");
 
         sb.append("  Charging Points:\n");
-        for (ChargingPoint cp : chargingPoints) {
-            sb.append("    ")
-                    .append(cp.toString())
-                    .append("\n");
-        }
 
+        if (chargingPoints.isEmpty()) {
+            sb.append("    Coming soon...\n");
+        } else {
+            for (ChargingPoint cp : chargingPoints) {
+
+                sb.append("    ")
+                        .append(cp.toString())
+                        .append("\n");
+            }
+        }
         return sb.toString();
     }
-
-
 }
