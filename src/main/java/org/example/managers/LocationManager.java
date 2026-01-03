@@ -71,6 +71,17 @@ public class LocationManager {
         return null;
     }
 
+    public void updateLocationAddress(String locationID, String newAddress) {
+        Location location = getLocation(locationID);
+        if (location == null) {
+            throw new IllegalArgumentException("Location not found: " + locationID);
+        }
+        if (newAddress == null || newAddress.isBlank()) {
+            throw new IllegalArgumentException("Address cannot be null or empty.");
+        }
+        location.setAddress(newAddress);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Location Overview:\n");

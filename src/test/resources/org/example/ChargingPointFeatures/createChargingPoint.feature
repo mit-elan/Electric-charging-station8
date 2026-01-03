@@ -17,3 +17,21 @@ Feature: Create Charging Point
     When the Operator creates a Charging Point with ID "CP-002", mode "DC", at Location "LOC-1"
     Then the Charging Point with ID "CP-002" exists at Location "LOC-1"
     And the Charging Point with ID "CP-002" has mode "DC"
+
+  Scenario: Create multiple Charging Points with different modes at one Location
+    When the Operator creates a Charging Point with ID "CP-101", mode "AC", at Location "LOC-1"
+    And the Operator creates a Charging Point with ID "CP-102", mode "DC", at Location "LOC-1"
+    And the Operator creates a Charging Point with ID "CP-103", mode "AC", at Location "LOC-1"
+    And the Operator creates a Charging Point with ID "CP-104", mode "DC", at Location "LOC-1"
+
+    Then the Charging Point with ID "CP-101" exists at Location "LOC-1"
+    And the Charging Point with ID "CP-101" has mode "AC"
+
+    And the Charging Point with ID "CP-102" exists at Location "LOC-1"
+    And the Charging Point with ID "CP-102" has mode "DC"
+
+    And the Charging Point with ID "CP-103" exists at Location "LOC-1"
+    And the Charging Point with ID "CP-103" has mode "AC"
+
+    And the Charging Point with ID "CP-104" exists at Location "LOC-1"
+    And the Charging Point with ID "CP-104" has mode "DC"
