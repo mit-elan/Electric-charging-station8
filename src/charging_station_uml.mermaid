@@ -22,6 +22,7 @@ classDiagram
         locations : Location [*]
         +createLocation()
         +updateLocationPricing()
+        +updateLocationAddress()
         +deleteLocation()
         +monitorLocationNetwork()
     }
@@ -37,7 +38,6 @@ classDiagram
         chargingSessions : ChargingSession [*]
         +createChargingSession()
         +readChargingSession()
-        +endCharingSession()
     }
 
     class InvoiceManager {
@@ -50,7 +50,11 @@ classDiagram
         name : string
         email : string
         password : string
-        credit : double
+    }
+
+    class Credit {
+        amount : double
+        lastUpdated : string
     }
 
     class Location {
@@ -60,18 +64,19 @@ classDiagram
 
     class ChargingPoint {
         chargingPointID : string
-        chargingMode : ChargingMode
         operatingStatus : OperatingStatus
     }
 
     class ChargingSession {
         sessionID : string
         startTime : string
-        endTime : string
+        duration : integer
+        chargingMode : ChargingMode
+        chargingPointID : string
     }
 
     class Invoice {
-        invoiceItemNumber : string
+        invoiceNumber : string
         price : double
     }
 
@@ -82,14 +87,13 @@ classDiagram
         OutOfOrder
     }
 
-    class ChargingMode{
+    class ChargingMode {
         <<enumeration>>
         AC
         DC
     }
 
-%% Relationships / Aggregations
-
+%% System Aggregation
     ElectricFillingStationNetwork "1" *--> "1" AccountManager
     ElectricFillingStationNetwork "1" *--> "1" CreditManager
     ElectricFillingStationNetwork "1" *--> "1" LocationManager
@@ -97,14 +101,17 @@ classDiagram
     ElectricFillingStationNetwork "1" *--> "1" ChargingSessionManager
     ElectricFillingStationNetwork "1" *--> "1" InvoiceManager
 
-AccountManager "1" *--> "*" Account
-CreditManager "1" *--> "*" Account
-LocationManager "1" *--> "*" Location
-ChargingPointManager "1" *--> "*" ChargingPoint
-ChargingSessionManager "1" *--> "*" ChargingSession
-InvoiceManager "1" *--> "*" Invoice
-Location "1" *--> "0..*" ChargingPoint
+%% Manager to Entity
+    AccountManager "1" *--> "*" Account
+    CreditManager "1" *--> "*" Credit
+    LocationManager "1" *--> "*" Location
+    ChargingPointManager "1" *--> "*" ChargingPoint
+    ChargingSessionManager "1" *--> "*" ChargingSession
+    InvoiceManager "1" *--> "*" Invoice
 
-ChargingPoint "1" --> "*" ChargingSession
-Account "1" --> "0..*" ChargingSession
-ChargingSession "1" --> "1" Invoice
+%% Domain Relationships
+    Account "1" --> "1" Credit
+    Location "1" *--> "0..*" ChargingPoint
+    ChargingPoint "1" --> "0..*" ChargingSession
+    Account "1" --> "0..*" ChargingSession
+    ChargingSession "1" --> "1" Invoice

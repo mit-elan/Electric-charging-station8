@@ -12,6 +12,10 @@ public class ChargingPointManager {
     private static final ChargingPointManager INSTANCE = new ChargingPointManager();
     private final List<ChargingPoint> chargingPoints;
 
+    private ChargingPointManager() {
+        chargingPoints = new ArrayList<>();
+    }
+
     public static ChargingPointManager getInstance() {
         return INSTANCE;
     }
@@ -20,15 +24,24 @@ public class ChargingPointManager {
         chargingPoints.clear();
     }
 
+    public ChargingPoint createChargingPoint(
+            Location location,
+            String chargingPointID,
+            Mode mode) {
 
-    public ChargingPointManager() {
-        chargingPoints = new ArrayList<>();
-    }
-    public void createChargingPoint(Location location, String chargingPointID, Mode mode) {
-        if (location == null) throw new IllegalArgumentException("Location cannot be null");
+        if (location == null) {
+            throw new IllegalArgumentException("Location cannot be null");
+        }
+
         ChargingPoint cp = new ChargingPoint(location, chargingPointID, mode);
-        Location.addChargingPoint(cp);
+
+        // Correct ownership
+        location.addChargingPoint(cp);
+
+        // Manager bookkeeping
         chargingPoints.add(cp);
+
+        return cp;
     }
 
 
@@ -58,5 +71,9 @@ public class ChargingPointManager {
 
     public void deleteChargingPoint(String chargingPointID) {
         chargingPoints.removeIf(cp -> cp.getChargingPointID().equals(chargingPointID));
+    }
+
+    public void addChargingPoint(ChargingPoint cp) {
+        chargingPoints.add(cp);
     }
 }

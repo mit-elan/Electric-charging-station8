@@ -11,7 +11,7 @@ public class Location {
     private String address;
     private double acPrice;
     private double dcPrice;
-    private static final List<ChargingPoint> chargingPoints = new ArrayList<>();
+    private final List<ChargingPoint> chargingPoints = new ArrayList<>();
 
     public Location(String locationID, String name, String address) {
         if (locationID == null || name == null || address == null) {
@@ -75,7 +75,10 @@ public class Location {
         }
     }
 
-    public static void addChargingPoint(ChargingPoint cp) {
+    public void addChargingPoint(ChargingPoint cp) {
+        if (cp == null) {
+            throw new IllegalArgumentException("ChargingPoint cannot be null.");
+        }
         chargingPoints.add(cp);
     }
 
