@@ -1,4 +1,4 @@
-package org.example.LocationSteps;
+package org.example.LocationChargingNetwork;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
@@ -22,16 +22,23 @@ public class ReadChargingNetworkSteps {
     private final ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
     private List<Location> locations;
 
+    @Given("a new Charging Network with Locations")
+    public void a_new_charging_network_with_locations(DataTable dataTable) {
+        // Clear any existing locations if needed
+        locationManager.getAllLocations().clear();
 
-    @Given("a Charging Network with Locations")
-    public void a_charging_network_with_locations(DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
 
-        for (Map<String, String> row : dataTable.asMaps()) {
-            locationManager.createLocation(
-                    row.get("locationID"),
-                    row.get("name"),
-                    row.get("address")
-            );
+        for (Map<String, String> row : rows) {
+            String locationID = row.get("locationID");
+            String name = row.get("name");
+            String address = row.get("address");
+
+            // Create the location using LocationManager
+            Location location = locationManager.createLocation(locationID, name, address);
+
+            // Optionally print for debug
+            System.out.println("Created Location: " + location.getLocationID() + " | " + location.getName());
         }
     }
 

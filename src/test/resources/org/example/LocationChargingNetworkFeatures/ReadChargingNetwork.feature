@@ -14,7 +14,7 @@ Feature: Read Charging Network
     And a new Charging Point Manager
 
   Scenario: Customer views charging network overview
-    Given a Charging Network with Locations
+    Given a new Charging Network with Locations
       | locationID | name          | address        |
       | LOC-1      | Main Location | Main Address   |
 

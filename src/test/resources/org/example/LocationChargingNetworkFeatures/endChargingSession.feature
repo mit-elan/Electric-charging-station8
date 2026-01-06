@@ -1,7 +1,7 @@
-Feature: Start Charging Session
-  As a Customer
-  I want to start a charging session at a charging point
-  so that I can charge my electric vehicle
+Feature: End Charging Session
+  As a customer
+  I want to end a charging session at a charging point
+  so that I can use my vehicle again
 
   Background:
     Given a new Account Manager
@@ -28,10 +28,13 @@ Feature: Start Charging Session
       | AC Price | DC Price |
       | 0.35     | 0.60     |
 
-    And the Charging Point "CP-1" is InOperationFree
+    And an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"
 
-  Scenario: Successfully start a charging session
-    When the Customer physically connects their car to Charging Point "CP-1"
-    Then the Customer "CUST-1" starts a charging session at Charging Point "CP-1"
-    And a charging session exists for Customer "CUST-1" at Charging Point "CP-1"
-    And the Charging Point "CP-1" is marked as Occupied
+  Scenario: Successfully end a charging session
+    When the customer disconnects the vehicle from Charging Point "CP-1"
+    Then the charging session with ID "CS-1" is stopped using 50.00 kWh over 20 minutes
+    And the charging session is stored in the ChargingSessionManager
+    And the price of the charging session "CS-1" is 17.50
+    And an invoice is created for the charging session "CS-1"
+    And the Charging Point "CP-1" is marked as InOperationFree
+    And the remaining credit of Customer "CUST-1" is 2.50

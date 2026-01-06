@@ -41,7 +41,6 @@ public class AccountManager {
         accounts.add(account);
     }
 
-
     public Account getAccount(String customerID) {
         for (Account account : accounts) {
             if (account.getCustomerID().equals(customerID)) {

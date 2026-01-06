@@ -9,12 +9,12 @@ public class ChargingPoint {
     private final Mode mode;
     private OperatingStatus operatingStatus;
     private double price;
+    private boolean isPhysicallyConnected = false;
 
     public ChargingPoint(Location location, String chargingPointID, Mode mode) {
         if (location == null) {
             throw new IllegalArgumentException("Location cannot be null.");
         }
-
         this.location = location;
         this.chargingPointID = chargingPointID;
         this.mode = mode;
@@ -52,8 +52,24 @@ public class ChargingPoint {
         return price;
     }
 
+    public void connectVehicle() {
+        if (isPhysicallyConnected) {
+            throw new IllegalStateException("Vehicle already connected");
+        }
+        this.isPhysicallyConnected = true;
+    }
+
+    public void disconnectVehicle() {
+        if (!isPhysicallyConnected) {
+            throw new IllegalStateException("No vehicle connected");
+        }
+        this.isPhysicallyConnected = false;
+    }
+
+    public boolean isPhysicallyConnected() { return isPhysicallyConnected; }
+
     /* Only Location may change pricing */
-    void setPrice(double price) {
+    public void setPrice(double price) {
         if (price < 0) {
             throw new IllegalArgumentException("Price cannot be negative.");
         }

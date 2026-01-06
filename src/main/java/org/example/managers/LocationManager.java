@@ -100,4 +100,16 @@ public class LocationManager {
         location.setPricing(acPrice, dcPrice);
     }
 
+    public Location getLocationByChargingPoint(String cpId) {
+        for (Location loc : locations) {
+            // Checking the list of points inside each location
+            boolean holdsPoint = loc.getChargingPoints().stream()
+                    .anyMatch(cp -> cp.getChargingPointID().equals(cpId));
+
+            if (holdsPoint) {
+                return loc;
+            }
+        }
+        throw new IllegalArgumentException("No Location found containing Charging Point: " + cpId);
+    }
 }
