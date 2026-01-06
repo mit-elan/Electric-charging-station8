@@ -22,27 +22,18 @@ public class ChargingPointSystemSteps {
         chargingPointManager.clearChargingPoints();
     }
 
-    @Given("the Location has charging Points")
-    public void the_location_has_charging_points(DataTable dataTable) {
+    @Given("the Location {string} has charging Points")
+    public void the_location_has_charging_points(String locationID, DataTable dataTable) {
 
-        // 1. There must be exactly one location in Background
-        List<Location> locations = locationManager.getAllLocations();
-        Assertions.assertEquals(1, locations.size(),
-                "Expected exactly one Location in context");
-
-        Location location = locations.get(0);
-
-        // 2. Create charging points THROUGH the manager
+        Location location = locationManager.getLocation(locationID);
+        if (location == null) {
+            throw new IllegalArgumentException("Location not found: " + locationID);
+        }
+        // Create charging points for that location
         for (Map<String, String> row : dataTable.asMaps()) {
-
             String chargingPointID = row.get("Charging Point ID");
             Mode mode = Mode.valueOf(row.get("Mode"));
-
-            chargingPointManager.createChargingPoint(
-                    location,
-                    chargingPointID,
-                    mode
-            );
+            chargingPointManager.createChargingPoint(location, chargingPointID, mode);
         }
     }
 }

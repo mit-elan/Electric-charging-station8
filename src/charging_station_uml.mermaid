@@ -1,11 +1,10 @@
 classDiagram
-
     class ElectricFillingStationNetwork {
         +main()
     }
 
     class AccountManager {
-        accounts : Account [*]
+        accounts: Account [*]
         +createAccount()
         +readAccount()
         +updateAccount()
@@ -13,13 +12,12 @@ classDiagram
     }
 
     class CreditManager {
-        credits : Credit [*]
-        +updateCredit()
+        +topUpCredit()
         +readCredit()
     }
 
     class LocationManager {
-        locations : Location [*]
+        locations: Location [*]
         +createLocation()
         +updateLocationPricing()
         +updateLocationAddress()
@@ -28,56 +26,61 @@ classDiagram
     }
 
     class ChargingPointManager {
-        chargingPoints : ChargingPoint [*]
+        chargingPoints: ChargingPoint [*]
         +createChargingPoint()
         +updateChargingPoint()
         +deleteChargingPoint()
     }
 
     class ChargingSessionManager {
-        chargingSessions : ChargingSession [*]
+        chargingSessions: ChargingSession [*]
         +createChargingSession()
         +readChargingSession()
     }
 
     class InvoiceManager {
-        invoices : Invoice [*]
-        +readInvoice()
+        invoices: Invoice [*]
+        +createInvoiceFromSession(ChargingSession)
+        +readInvoice
     }
 
     class Account {
-        customerID : string
-        name : string
-        email : string
-        password : string
+        customerID: string
+        name: string
+        email: string
+        password: string
     }
 
     class Credit {
-        amount : double
-        lastUpdated : string
+        creditHistroy: Credit [*]
+        amount: double
+        lastUpdated: string
     }
 
     class Location {
-        locationID : string
-        address : string
+        locationID: string
+        address: string
     }
 
     class ChargingPoint {
-        chargingPointID : string
-        operatingStatus : OperatingStatus
+        chargingPointID: string
+        operatingStatus: OperatingStatus
     }
 
     class ChargingSession {
-        sessionID : string
-        startTime : string
-        duration : integer
-        chargingMode : ChargingMode
-        chargingPointID : string
+        sessionID: string
+        startTime: string
+        duration: integer
+        chargingMode: ChargingMode
+        chargingPointID: string
+        energyUsed: double
+        price: double
     }
 
     class Invoice {
-        invoiceNumber : string
-        price : double
+        invoiceNumber: string
+        session: ChargingSession
+        account: Account
     }
 
     class OperatingStatus {
@@ -102,16 +105,16 @@ classDiagram
     ElectricFillingStationNetwork "1" *--> "1" InvoiceManager
 
 %% Manager to Entity
-    AccountManager "1" *--> "*" Account
     CreditManager "1" *--> "*" Credit
+    AccountManager "1" *--> "*" Account
     LocationManager "1" *--> "*" Location
     ChargingPointManager "1" *--> "*" ChargingPoint
     ChargingSessionManager "1" *--> "*" ChargingSession
     InvoiceManager "1" *--> "*" Invoice
-
 %% Domain Relationships
-    Account "1" --> "1" Credit
+    Account "1" *--> "1" Credit
     Location "1" *--> "0..*" ChargingPoint
     ChargingPoint "1" --> "0..*" ChargingSession
     Account "1" --> "0..*" ChargingSession
     ChargingSession "1" --> "1" Invoice
+    Account "1" -- "0..*" Invoice

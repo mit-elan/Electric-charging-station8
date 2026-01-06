@@ -9,71 +9,74 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChargingPointManager {
-    private static final ChargingPointManager INSTANCE = new ChargingPointManager();
-    private final List<ChargingPoint> chargingPoints;
 
-    private ChargingPointManager() {
-        chargingPoints = new ArrayList<>();
-    }
+    private static ChargingPointManager instance;
+    private final List<ChargingPoint> chargingPoints = new ArrayList<>();
+
+    private ChargingPointManager() {}
 
     public static ChargingPointManager getInstance() {
-        return INSTANCE;
+        if (instance == null) {
+            instance = new ChargingPointManager();
+        }
+        return instance;
     }
 
     public void clearChargingPoints() {
         chargingPoints.clear();
     }
 
-    public ChargingPoint createChargingPoint(
+    public void createChargingPoint(
             Location location,
             String chargingPointID,
-            Mode mode) {
-
+            Mode mode
+    ) {
+        // 1. Validate input
         if (location == null) {
-            throw new IllegalArgumentException("Location cannot be null");
+            throw new IllegalArgumentException("Location must not be null");
+        }
+        if (chargingPointID == null || mode == null) {
+            throw new IllegalArgumentException("Charging Point ID and Mode must not be null");
         }
 
-        ChargingPoint cp = new ChargingPoint(location, chargingPointID, mode);
+        // 2. Prevent duplicate IDs
+        boolean exists = chargingPoints.stream()
+                .anyMatch(cp -> cp.getChargingPointID().equals(chargingPointID));
+        if (exists) {
+            throw new IllegalStateException(
+                    "Charging Point with ID " + chargingPointID + " already exists"
+            );
+        }
 
-        // Correct ownership
-        location.addChargingPoint(cp);
+        // 3. Create charging point
+        ChargingPoint chargingPoint = new ChargingPoint(location, chargingPointID, mode);
 
-        // Manager bookkeeping
-        chargingPoints.add(cp);
+        // 4. Set initial operating status
+        chargingPoint.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
-        return cp;
+        // 5. Set price based on Location pricing
+        if (mode == Mode.AC) {
+            chargingPoint.setPrice(location.getAcPrice());
+        } else if (mode == Mode.DC) {
+            chargingPoint.setPrice(location.getDcPrice());
+        }
+
+        // 6. Attach to location (domain invariant)
+        location.addChargingPoint(chargingPoint);
+
+        // 7. Register globally
+        chargingPoints.add(chargingPoint);
+
     }
 
+    public ChargingPoint getChargingPointById(String id) {
+        return chargingPoints.stream()
+                .filter(cp -> cp.getChargingPointID().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
 
     public List<ChargingPoint> getChargingPoints() {
         return chargingPoints;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Charging Point Overview:\n");
-        for (ChargingPoint cp : chargingPoints) {
-            sb.append(cp.toString()).append("\n");
-        }
-        return sb.toString();
-    }
-
-
-    public void updateChargingPoint(String chargingPointID, OperatingStatus operatingStatus) {
-        for (ChargingPoint chargingPoint : chargingPoints) {
-            if (chargingPoint.getChargingPointID().equals(chargingPointID)) {
-                chargingPoint.setOperatingStatus(operatingStatus);
-                return;
-            }
-        }
-    }
-
-
-    public void deleteChargingPoint(String chargingPointID) {
-        chargingPoints.removeIf(cp -> cp.getChargingPointID().equals(chargingPointID));
-    }
-
-    public void addChargingPoint(ChargingPoint cp) {
-        chargingPoints.add(cp);
     }
 }

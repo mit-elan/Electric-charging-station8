@@ -1,0 +1,73 @@
+package org.example.LocationChargingNetwork;
+
+import io.cucumber.java.en.*;
+import org.example.entities.*;
+import org.example.managers.*;
+import org.example.enums.OperatingStatus;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class StartChargingSessionSteps {
+
+    // Managers
+    private final AccountManager accountManager = AccountManager.getInstance();
+    private final ChargingSessionManager sessionManager = ChargingSessionManager.getInstance();
+    private ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
+
+    @Given("the Charging Point {string} is InOperationFree")
+    public void the_charging_point_is_in_operation_free(String cpId) {
+        ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
+        cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+    }
+
+    @Given("the Customer physically connects their car to Charging Point {string}")
+    public void the_charging_point_is_physically_connected(String cpId) {
+        ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
+        cp.connectVehicle(); // See Step 2 below
+    }
+
+    @When("the Customer {string} starts a charging session at Charging Point {string}")
+    public void start_session(String custId, String cpId) {
+        Account account = accountManager.getAccount(custId);
+        ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
+        sessionManager.createChargingSession(account, cp);
+    }
+
+    @Then("a charging session exists for Customer {string} at Charging Point {string}")
+    public void verify_session_exists(String custId, String cpId) {
+        // 1. Get the list from the instance (not the class)
+        List<ChargingSession> sessions = ChargingSessionManager.getInstance().getChargingSessions();
+
+        boolean found = false;
+
+        // 2. Use a simple loop - very clear and easy to explain in a presentation
+        for (ChargingSession session : sessions) {
+            String sessionCustId = session.getAccount().getCustomerID();
+            String sessionCpId = session.getChargingPoint().getChargingPointID();
+
+            if (sessionCustId.equals(custId) && sessionCpId.equals(cpId)) {
+                found = true;
+                break;
+            }
+        }
+
+        assertTrue(found, "Could not find a Charging Session for Customer " + custId + " at Point " + cpId);
+    }
+
+    @Then("the Charging Point {string} is marked as Occupied")
+    public void verify_occupied(String cpId) {
+        ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
+        assertEquals(OperatingStatus.OCCUPIED, cp.getOperatingStatus());
+    }
+
+    public ChargingPointManager getChargingPointManager() {
+        return chargingPointManager;
+    }
+
+    public void setChargingPointManager(ChargingPointManager chargingPointManager) {
+        this.chargingPointManager = chargingPointManager;
+    }
+}
+

@@ -9,7 +9,9 @@ Feature: Update Location Pricing
     And the following Locations exist:
       | Location ID | Address         | Name            |
       | LOC-200     | Energy Road 5   | East Station    |
-    And the Location has charging Points
+      | LOC-300     | New Road 300    | North Station   |
+
+    And the Location "LOC-200" has charging Points
       | Charging Point ID | Mode |
       | CP-1              | AC   |
       | CP-2              | DC   |
