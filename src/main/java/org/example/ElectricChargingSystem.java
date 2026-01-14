@@ -1,8 +1,6 @@
 package org.example;
 
 import org.example.entities.Account;
-import org.example.entities.ChargingPoint;
-import org.example.entities.ChargingSession;
 import org.example.entities.Location;
 import org.example.enums.Mode;
 import org.example.managers.*;
