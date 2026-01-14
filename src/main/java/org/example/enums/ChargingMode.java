@@ -1,6 +1,6 @@
 package org.example.enums;
 
-public enum Mode {
+public enum ChargingMode {
     AC,
     DC
 }

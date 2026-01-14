@@ -4,19 +4,20 @@ import org.example.entities.Account;
 import org.example.entities.ChargingPoint;
 import org.example.entities.ChargingSession;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.enums.OperatingStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ChargingSessionManager {
     private static final ChargingSessionManager INSTANCE = new ChargingSessionManager();
     private final LocationManager locationManager = LocationManager.getInstance();
 
     private final List<ChargingSession> chargingSessions = new ArrayList<>();
+    private int ChargingSessionCounter = 0;
+
 
     private ChargingSessionManager() {
     }
@@ -27,6 +28,7 @@ public class ChargingSessionManager {
 
     public void clearChargingSessions() {
         chargingSessions.clear();
+        ChargingSessionCounter = 0;
     }
 
     public List<ChargingSession> getChargingSessions() {
@@ -55,7 +57,7 @@ public class ChargingSessionManager {
         }
 
         ChargingSession session = new ChargingSession(
-                UUID.randomUUID().toString(),
+                "CS-" + (++ChargingSessionCounter),
                 LocalDateTime.now(),
                 chargingPoint
         );
@@ -67,21 +69,26 @@ public class ChargingSessionManager {
 
     }
 
-    public ChargingSession createChargingSessionWithId(String sessionId, Account account, ChargingPoint chargingPoint) {
+    public ChargingSession createChargingSessionWithId(
+            String sessionId,
+            Account account,
+            ChargingPoint chargingPoint,
+            LocalDateTime startTime
+    ) {
         ChargingSession session = new ChargingSession(
                 sessionId,
-                LocalDateTime.now(),
+                startTime,
                 chargingPoint
         );
 
         session.setAccount(account);
-        session.setChargingPoint(chargingPoint);
         chargingPoint.setOperatingStatus(OperatingStatus.OCCUPIED);
         chargingPoint.connectVehicle();
 
         chargingSessions.add(session);
         return session;
     }
+
 
 
     public void endChargingSession(String sessionId, double energyUsed, int duration) {
@@ -94,31 +101,23 @@ public class ChargingSessionManager {
         Location location = locationManager.getLocationByChargingPoint(session.getChargingPointID());
 
         // Determine price based on Mode
-        double pricePerKwh = (cp.getMode() == Mode.AC)
+        double pricePerKwh = (cp.getMode() == ChargingMode.AC)
                 ? location.getAcPrice()
                 : location.getDcPrice();
 
-        // Set the final values
-        session.setEnergyUsed(energyUsed);
-        if (energyUsed <= 0) {
-            throw new IllegalArgumentException("Energy used must be greater than 0");
-        }
+        double price = energyUsed * pricePerKwh;
 
-        session.setDuration(duration);
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration must be greater than 0");
-        }
+        //SINGLE LINE that ends the session
+        session.endSession(energyUsed, duration, price);
 
-        session.setPrice(energyUsed * pricePerKwh); // Use the Location's pricing!
-
-
-        // Update status and credit
+        // External effects
         cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
-        session.getAccount().getCredit().subtractCredit(session.getPrice());
         cp.disconnectVehicle();
 
-        //Create Invoice
+        session.getAccount().getCredit().subtractCredit(price);
+
         InvoiceManager.getInstance().createInvoiceFromSession(session);
+
     }
 
     public ChargingSession getChargingSessionById(String sessionId) {

@@ -9,6 +9,7 @@ import org.example.entities.ChargingSession;
 import org.example.entities.Invoice;
 import org.example.managers.*;
 
+import java.time.LocalDateTime;
 import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,12 +39,13 @@ public class EndChargingSessionSteps {
         assertNotNull(account, "Account must exist");
         assertNotNull(chargingPoint, "Charging Point must exist");
 
-        chargingPoint.isPhysicallyConnected();
+        LocalDateTime now = LocalDateTime.now();
 
         activeSession = chargingSessionManager.createChargingSessionWithId(
                 sessionId,
                 account,
-                chargingPoint
+                chargingPoint,
+                now
         );
 
         assertNotNull(activeSession, "Charging session should be created");

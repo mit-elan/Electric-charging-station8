@@ -1,27 +1,27 @@
 package org.example.entities;
 
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.enums.OperatingStatus;
 
 public class ChargingPoint {
     private final Location location;
     private final String chargingPointID;
-    private final Mode mode;
+    private final ChargingMode chargingMode;
     private OperatingStatus operatingStatus;
     private double price;
     private boolean isPhysicallyConnected = false;
 
-    public ChargingPoint(Location location, String chargingPointID, Mode mode) {
+    public ChargingPoint(Location location, String chargingPointID, ChargingMode chargingMode) {
         if (location == null) {
             throw new IllegalArgumentException("Location cannot be null.");
         }
         this.location = location;
         this.chargingPointID = chargingPointID;
-        this.mode = mode;
+        this.chargingMode = chargingMode;
         this.operatingStatus = OperatingStatus.IN_OPERATION_FREE;
 
         // Initial price comes from Location
-        if (mode == Mode.AC) {
+        if (chargingMode == ChargingMode.AC) {
             this.price = location.getAcPrice();
         } else {
             this.price = location.getDcPrice();
@@ -36,8 +36,8 @@ public class ChargingPoint {
         return chargingPointID;
     }
 
-    public Mode getMode() {
-        return mode;
+    public ChargingMode getMode() {
+        return chargingMode;
     }
 
     public OperatingStatus getOperatingStatus() {
@@ -79,7 +79,7 @@ public class ChargingPoint {
     @Override
     public String toString() {
         return "ChargingPoint " + chargingPointID +
-                " | Mode: " + mode +
+                " | Mode: " + chargingMode +
                 " | Price: " + price +
                 " | Status: " + operatingStatus;
     }

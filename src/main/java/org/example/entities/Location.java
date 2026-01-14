@@ -1,6 +1,6 @@
 package org.example.entities;
 
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +67,9 @@ public class Location {
         setDcPrice(dcPrice);
 
         for (ChargingPoint chargingPoint : chargingPoints) {
-            if (chargingPoint.getMode() == Mode.AC) {
+            if (chargingPoint.getMode() == ChargingMode.AC) {
                 chargingPoint.setPrice(acPrice);
-            } else if (chargingPoint.getMode() == Mode.DC) {
+            } else if (chargingPoint.getMode() == ChargingMode.DC) {
                 chargingPoint.setPrice(dcPrice);
             }
         }

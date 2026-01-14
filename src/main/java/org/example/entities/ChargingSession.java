@@ -1,6 +1,6 @@
 package org.example.entities;
 
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 
 import java.time.LocalDateTime;
 
@@ -8,12 +8,13 @@ public class ChargingSession {
     private final String sessionID;
     private final LocalDateTime startTime;
     private int duration; // in minutes
-    private final Mode chargingMode;
+    private final ChargingMode chargingMode;
     private final String chargingPointID;
     private double energyUsed;
     private double price;
     private Account account;
     private ChargingPoint chargingPoint;
+    private boolean active = true;
 
     public ChargingSession(
             String sessionID,
@@ -23,7 +24,8 @@ public class ChargingSession {
         this.startTime = startTime;
         this.chargingPoint = chargingPoint;                 // reference
         this.chargingPointID = chargingPoint.getChargingPointID(); // snapshot
-        this.chargingMode = chargingPoint.getMode();        // snapshot
+        this.chargingMode = chargingPoint.getMode();// snapshot
+
     }
 
 
@@ -39,7 +41,7 @@ public class ChargingSession {
         return duration;
     }
 
-    public Mode getChargingMode() {
+    public ChargingMode getChargingMode() {
         return chargingMode;
     }
 
@@ -71,7 +73,7 @@ public class ChargingSession {
     }
 
     public boolean isActive() {
-        return duration == 0;
+        return active;
     }
 
     public double getEnergyUsed() {
@@ -95,6 +97,17 @@ public class ChargingSession {
             return "UNKNOWN LOCATION";
         }
         return chargingPoint.getLocation().getName();
+    }
+
+    public void endSession(double energyUsed, int duration, double price) {
+        if (!active) {
+            throw new IllegalStateException("Charging session already ended");
+        }
+
+        this.energyUsed = energyUsed;
+        this.duration = duration;
+        this.price = price;
+        this.active = false;
     }
 }
 

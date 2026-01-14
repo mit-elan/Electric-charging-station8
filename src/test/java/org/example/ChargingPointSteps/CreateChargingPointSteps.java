@@ -3,11 +3,9 @@ package org.example.ChargingPointSteps;
 import io.cucumber.java.en.*;
 import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,9 +29,9 @@ public class CreateChargingPointSteps {
 
     @When("the Operator creates a Charging Point with ID {string}, mode {string}, at Location {string}")
     public void the_operator_creates_a_charging_point(String chargingPointID, String modeStr, String locationID) {
-        Mode mode = Mode.valueOf(modeStr);
+        ChargingMode chargingMode = ChargingMode.valueOf(modeStr);
         Location targetLocation = locationManager.getLocationByID(locationID);
-        chargingPointManager.createChargingPoint(targetLocation, chargingPointID, mode);
+        chargingPointManager.createChargingPoint(targetLocation, chargingPointID, chargingMode);
     }
 
     @Then("the Charging Point with ID {string} exists at Location {string}")
@@ -46,11 +44,11 @@ public class CreateChargingPointSteps {
 
     @And("the Charging Point with ID {string} has mode {string}")
     public void the_charging_point_has_mode(String chargingPointID, String modeStr) {
-        Mode mode = Mode.valueOf(modeStr);
+        ChargingMode chargingMode = ChargingMode.valueOf(modeStr);
         ChargingPoint cp = chargingPointManager.getChargingPoints().stream()
                 .filter(c -> c.getChargingPointID().equals(chargingPointID))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Charging Point " + chargingPointID + " not found"));
-        assertEquals(mode, cp.getMode(), "Charging Point mode does not match");
+        assertEquals(chargingMode, cp.getMode(), "Charging Point mode does not match");
     }
 }

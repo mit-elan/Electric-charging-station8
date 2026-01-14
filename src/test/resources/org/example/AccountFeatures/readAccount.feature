@@ -18,17 +18,18 @@ Feature: Read Account
     And the displayed Email is "jane.doe@example.com"
     And the displayed Password is "secret123"
 
-  # Scenario for multiple accounts (admin view)
+# Scenario for multiple accounts (admin view)
   Scenario: View multiple accounts' information
     When the following accounts are created:
-      | Name          | Email             | Password |
-      | Alice Smith   | alice@mail.com    | pw1      |
-      | Bob Johnson   | bob@mail.com      | pw2      |
-      | Charlie Brown | charlie@mail.com  | pw3      |
+      | Customer ID | Name          | Email            | Password |
+      | CUST-1      | Alice Smith   | alice@mail.com   | pw1      |
+      | CUST-2      | Bob Johnson   | bob@mail.com     | pw2      |
+      | CUST-3      | Charlie Brown | charlie@mail.com | pw3      |
     Then reading the account list shows the following output:
-      """
-      Account Overview:
-      Name: Alice Smith, Email: alice@mail.com, Password: pw1
-      Name: Bob Johnson, Email: bob@mail.com, Password: pw2
-      Name: Charlie Brown, Email: charlie@mail.com, Password: pw3
-      """
+    """
+    Account Overview:
+    Customer ID: CUST-1, Name: Alice Smith, Email: alice@mail.com, Password: pw1
+    Customer ID: CUST-2, Name: Bob Johnson, Email: bob@mail.com, Password: pw2
+    Customer ID: CUST-3, Name: Charlie Brown, Email: charlie@mail.com, Password: pw3
+    """
+

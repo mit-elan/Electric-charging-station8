@@ -1,7 +1,7 @@
 package org.example.managers;
 
 import org.example.entities.*;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +11,7 @@ public class InvoiceManager {
 
     private static final InvoiceManager INSTANCE = new InvoiceManager();
     private final List<Invoice> invoices = new ArrayList<>();
+    private int invoiceCounter = 0;
 
     private InvoiceManager() {
     }
@@ -25,6 +26,7 @@ public class InvoiceManager {
 
     public void clearInvoices() {
         invoices.clear();
+        invoiceCounter = 0;
     }
 
     public List<Invoice> getAllInvoices() {
@@ -44,8 +46,10 @@ public class InvoiceManager {
             throw new IllegalStateException("ChargingSession has no Account");
         }
 
+        String invoiceId = String.valueOf(++invoiceCounter);
+
         Invoice invoice = new Invoice(
-                UUID.randomUUID().toString(),   // invoice item number
+                invoiceId,                  // invoice item number
                 session,                        // real charging session
                 session.getAccount()            // account comes FROM session
         );
@@ -64,7 +68,7 @@ public class InvoiceManager {
             String itemNo,
             String locationName,
             String chargingPointId,
-            Mode mode,
+            ChargingMode chargingMode,
             int durationMinutes,
             double energyUsedKwh,
             double price
@@ -90,7 +94,7 @@ public class InvoiceManager {
         ChargingPoint fakeChargingPoint = new ChargingPoint(
                 fakeLocation,
                 chargingPointId,
-                mode
+                chargingMode
         );
 
         // 3. Create fake ChargingSession

@@ -6,11 +6,10 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.managers.LocationManager;
 import org.junit.jupiter.api.Assertions;
 
-import java.util.List;
 import java.util.Map;
 
 public class UpdateLocationPricingSteps {
@@ -47,7 +46,7 @@ public class UpdateLocationPricingSteps {
         Location location = locationManager.getLocation(locationID);
 
         for (ChargingPoint cp : location.getChargingPoints()) {
-            if (cp.getMode() == Mode.AC) {
+            if (cp.getMode() == ChargingMode.AC) {
                 Assertions.assertEquals(expectedPrice, cp.getPrice());
             }
         }
@@ -58,7 +57,7 @@ public class UpdateLocationPricingSteps {
         Location location = locationManager.getLocation(locationID);
 
         for (ChargingPoint cp : location.getChargingPoints()) {
-            if (cp.getMode() == Mode.DC) {
+            if (cp.getMode() == ChargingMode.DC) {
                 Assertions.assertEquals(expectedPrice, cp.getPrice());
             }
         }

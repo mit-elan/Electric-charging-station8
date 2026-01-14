@@ -4,7 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import org.example.entities.Account;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.managers.AccountManager;
 import org.example.managers.CreditManager;
 import org.example.managers.InvoiceManager;
@@ -48,7 +48,7 @@ public class ReadInvoicesSteps {
                     row.get("Item No"),
                     row.get("Location"),
                     row.get("Charging Point"),
-                    Mode.valueOf(row.get("Mode")),
+                    ChargingMode.valueOf(row.get("Mode")),
                     Integer.parseInt(row.get("Duration")),
                     Double.parseDouble(row.get("Energy Used")),
                     Double.parseDouble(row.get("Price"))
@@ -146,7 +146,7 @@ public class ReadInvoicesSteps {
                     row.get("Item No"),
                     row.get("Location"),
                     row.get("Charging Point"),
-                    Mode.valueOf(row.get("Mode")),
+                    ChargingMode.valueOf(row.get("Mode")),
                     Integer.parseInt(row.get("Duration")),
                     Double.parseDouble(row.get("Energy Used")),
                     Double.parseDouble(row.get("Price"))

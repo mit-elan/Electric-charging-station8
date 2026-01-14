@@ -4,12 +4,12 @@ import org.example.entities.Account;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class AccountManager {
     //The application uses singleton managers to represent system-wide services, and SystemSteps reset their state to guarantee isolated BDD scenarios.
     private static final AccountManager INSTANCE = new AccountManager();
     private final List<Account> accounts = new ArrayList<>();
+    private int AccountCounter = 0;
 
     private AccountManager() {
     }
@@ -20,13 +20,14 @@ public class AccountManager {
 
     public void clearAccounts() {
         accounts.clear();
+        AccountCounter = 0;
     }
 
     public Account createAccount(String name, String email, String password) {
         if (name == null || email == null || password == null) {
             throw new IllegalArgumentException("Account fields cannot be null");
         }
-        String id = UUID.randomUUID().toString();
+        String id = "CUST-" + (++AccountCounter);
         Account account = new Account(id, name, email, password);
         accounts.add(account);
         return account;

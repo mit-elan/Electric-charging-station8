@@ -2,7 +2,7 @@ package org.example.managers;
 
 import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.enums.OperatingStatus;
 
 import java.util.ArrayList;
@@ -29,13 +29,13 @@ public class ChargingPointManager {
     public void createChargingPoint(
             Location location,
             String chargingPointID,
-            Mode mode
+            ChargingMode chargingMode
     ) {
         // 1. Validate input
         if (location == null) {
             throw new IllegalArgumentException("Location must not be null");
         }
-        if (chargingPointID == null || mode == null) {
+        if (chargingPointID == null || chargingMode == null) {
             throw new IllegalArgumentException("Charging Point ID and Mode must not be null");
         }
 
@@ -49,15 +49,15 @@ public class ChargingPointManager {
         }
 
         // 3. Create charging point
-        ChargingPoint chargingPoint = new ChargingPoint(location, chargingPointID, mode);
+        ChargingPoint chargingPoint = new ChargingPoint(location, chargingPointID, chargingMode);
 
         // 4. Set initial operating status
         chargingPoint.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
         // 5. Set price based on Location pricing
-        if (mode == Mode.AC) {
+        if (chargingMode == ChargingMode.AC) {
             chargingPoint.setPrice(location.getAcPrice());
-        } else if (mode == Mode.DC) {
+        } else if (chargingMode == ChargingMode.DC) {
             chargingPoint.setPrice(location.getDcPrice());
         }
 

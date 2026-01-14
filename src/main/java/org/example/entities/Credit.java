@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Credit {
-    private double amount;          // Current Balance
+    private double amount;          // Current Credit
     private LocalDateTime lastUpdated;     // Timestamp of last change
     private final List<String> history = new ArrayList<>();
 

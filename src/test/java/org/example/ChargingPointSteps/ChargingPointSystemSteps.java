@@ -2,14 +2,11 @@ package org.example.ChargingPointSteps;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
-import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
-import org.junit.jupiter.api.Assertions;
 
-import java.util.List;
 import java.util.Map;
 
 public class ChargingPointSystemSteps {
@@ -32,8 +29,8 @@ public class ChargingPointSystemSteps {
         // Create charging points for that location
         for (Map<String, String> row : dataTable.asMaps()) {
             String chargingPointID = row.get("Charging Point ID");
-            Mode mode = Mode.valueOf(row.get("Mode"));
-            chargingPointManager.createChargingPoint(location, chargingPointID, mode);
+            ChargingMode chargingMode = ChargingMode.valueOf(row.get("Mode"));
+            chargingPointManager.createChargingPoint(location, chargingPointID, chargingMode);
         }
     }
 }

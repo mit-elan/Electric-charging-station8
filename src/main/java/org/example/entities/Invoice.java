@@ -1,6 +1,6 @@
 package org.example.entities;
 
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +31,7 @@ public class Invoice {
         return session.getLocationName();
     }
 
-    public Mode getChargingMode() {
+    public ChargingMode getChargingMode() {
         return session.getChargingMode();
     }
 

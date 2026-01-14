@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.example.entities.ChargingPoint;
 import org.example.entities.Location;
-import org.example.enums.Mode;
+import org.example.enums.ChargingMode;
 import org.example.enums.OperatingStatus;
 import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
@@ -51,7 +51,7 @@ public class ReadChargingNetworkSteps {
             chargingPointManager.createChargingPoint(
                     location,
                     row.get("chargingPointID"),
-                    Mode.valueOf(row.get("mode"))
+                    ChargingMode.valueOf(row.get("mode"))
             );
         }
     }

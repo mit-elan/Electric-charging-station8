@@ -19,19 +19,47 @@ public class Account {
         this.credit = null;
     }
 
-    public String getCustomerID() { return customerID; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public Credit getCredit() { return credit; }
+    public String getCustomerID() {
+        return customerID;
+    }
 
-    public void setName(String name) { this.name = name; }
-    public void setEmail(String email) { this.email = email; }
-    public void setPassword(String password) { this.password = password; }
-    public void setCredit(Credit credit) { this.credit = credit; }
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Credit getCredit() {
+        return credit;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCredit(Credit credit) {
+        this.credit = credit;
+    }
 
     @Override
     public String toString() {
-        return "Name: " + name + ", Email: " + email + ", Password: " + password;
+        return "Customer ID: " + customerID +
+                ", Name: " + name +
+                ", Email: " + email +
+                ", Password: " + password;
     }
 }
