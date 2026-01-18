@@ -48,11 +48,11 @@ public class ElectricChargingSystem {
 
         System.out.println(AccountManager.getInstance());
 
-        creditManager.initializeCredit(cust1.getCustomerID(), 80.00);
-        creditManager.initializeCredit(cust2.getCustomerID(), 90.00);
-        creditManager.initializeCredit(cust3.getCustomerID(), 150.00);
-        creditManager.initializeCredit(cust4.getCustomerID(), 100.00);
-        creditManager.initializeCredit(cust5.getCustomerID(), 120.00);
+        creditManager.topUpCredit(cust1, 80.00);
+        creditManager.topUpCredit(cust2, 90.00);
+        creditManager.topUpCredit(cust3, 150.00);
+        creditManager.topUpCredit(cust4, 100.00);
+        creditManager.topUpCredit(cust5, 120.00);
 
         // =======================
         // LOCATIONS & CHARGING POINTS

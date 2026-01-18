@@ -31,7 +31,7 @@ Feature: Start Charging Session
     And the Charging Point "CP-1" is InOperationFree
 
   Scenario: Successfully start a charging session
-    When the Customer physically connects their car to Charging Point "CP-1"
+    When the Customer "CUST-1" physically connects their car to Charging Point "CP-1"
     Then the Customer "CUST-1" starts a charging session at Charging Point "CP-1"
     And a charging session exists for Customer "CUST-1" at Charging Point "CP-1"
     And the Charging Point "CP-1" is marked as Occupied

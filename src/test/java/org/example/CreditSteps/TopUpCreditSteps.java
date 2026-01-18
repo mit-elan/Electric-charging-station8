@@ -34,7 +34,7 @@ public class TopUpCreditSteps {
             String customerId = row.get("Customer ID");
             double initialCredit = Double.parseDouble(row.get("Initial Credit"));
 
-            //Create account FIRST
+            // Create account
             AccountManager.getInstance().createAccountWithID(
                     customerId,
                     "Test User " + customerId,
@@ -42,10 +42,12 @@ public class TopUpCreditSteps {
                     "password"
             );
 
-            //Then initialize credit
-            CreditManager.getInstance().initializeCredit(customerId, initialCredit);
+            // Treat initial money as NORMAL TOP-UP
+            Account account = AccountManager.getInstance().getAccount(customerId);
+            CreditManager.getInstance().topUpCredit(account, initialCredit);
         }
     }
+
 
     @When("the customer with ID {string} tops up their credit with {double}")
     public void the_customer_tops_up_their_credit(String customerId, double amount) {
@@ -86,7 +88,8 @@ public class TopUpCreditSteps {
         );
 
         // 3. Parse the timestamp
-        LocalDateTime lastUpdated = LocalDateTime.now();
+        LocalDateTime lastUpdated = credit.getLastUpdated();
+
 
         // 4. Compare with the previous timestamp saved in your Step class
         if (creditUpdateTimestampBefore != null) {

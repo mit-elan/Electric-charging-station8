@@ -148,8 +148,9 @@ public class InvoiceManager {
         String formattedPrice = String.format("%.2f", invoice.getPrice());
 
         return String.format(
-                "Item %s | Start Time: %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: %s",
+                "Item %s | Customer: %s | Start Time: %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: %s",
                 invoice.getInvoiceItemNumber(),
+                invoice.getAccount().getCustomerID(),
                 formattedStartTime,
                 invoice.getLocationName(),
                 invoice.getChargingPointID(),
@@ -163,61 +164,127 @@ public class InvoiceManager {
     public void printInvoiceOverviewForAccount(Account account) {
         if (account == null) return;
 
-        // Header
         System.out.println("Invoice Overview for Customer: " + account.getCustomerID());
+        System.out.println();
 
-        // 1. Get invoices for this account, sorted descending by start time
+        // 1. Get invoices
         List<Invoice> customerInvoices = getInvoicesForAccount(account);
-        customerInvoices.sort((a, b) -> b.getStartTime().compareTo(a.getStartTime())); // newest first
 
-        // 2. Print each invoice line
+        // 2. Get top-ups
+        List<Credit.TopUpEntry> topUps = account.getCredit().getHistoryEntries(); // We'll add this helper
+
+        // 3. Create a unified list
+        List<Map.Entry<LocalDateTime, String>> timeline = new ArrayList<>();
+
+        // 3a. Add invoices
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         for (Invoice invoice : customerInvoices) {
-            System.out.println(formatInvoiceLine(invoice));
+            String line = String.format(
+                    "Charging Session | Item No %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %.2f kWh | Price: %.2f",
+                    invoice.getInvoiceItemNumber(),
+                    invoice.getLocationName(),
+                    invoice.getChargingPointID(),
+                    invoice.getChargingMode(),
+                    invoice.getDurationMinutes(),
+                    invoice.getEnergyUsedKwh(),
+                    invoice.getPrice()
+            );
+            timeline.add(Map.entry(invoice.getStartTime(), line));
         }
 
-        // 3. Print top-ups
-        List<String> topUps = CreditManager.getInstance().getTopUpHistoryByAccount(account);
-        if (!topUps.isEmpty()) {
-            System.out.println("\nCredit Top-Ups:");
-            for (String entry : topUps) {
-                // Assume entries already formatted as "Top-up | Amount: XX,YY | Date: dd-MM-yyyy HH:mm:ss"
-                System.out.println(entry);
-            }
+        // 3b. Add top-ups
+        for (Credit.TopUpEntry topUp : topUps) {
+            String line = String.format(
+                    "Top-up | Amount: %.2f",
+                    topUp.getAmount()
+            );
+            timeline.add(Map.entry(topUp.getDateTime(), line));
         }
 
-        // 4. Outstanding balance
-        // Use comma for decimal separator in Europe style
-        double balance = account.getCredit().getAmount();
-        String formattedBalance = String.format("%.2f", balance);
-        System.out.println("\nOutstanding Balance: " + formattedBalance);
+        // 4. Sort by date/time
+        timeline.sort(Comparator.comparing(Map.Entry::getKey));
+
+        // 5. Print unified list
+        for (Map.Entry<LocalDateTime, String> entry : timeline) {
+            System.out.println(formatter.format(entry.getKey()) + " | " + entry.getValue());
+        }
+
+        // 6. Print outstanding balance
+        System.out.println();
+        System.out.println("Outstanding Balance: " + String.format("%.2f", account.getCredit().getAmount()));
     }
+
+
 
     public void printGlobalInvoiceHistory() {
         System.out.println("Global Invoice and Top-up History (Sorted by Date and Time)");
         System.out.println("------------------------------------------------");
 
-        // 1. Sort the master list: Newest First
-        invoices.sort((a, b) -> b.getStartTime().compareTo(a.getStartTime()));
+        // 1. Prepare a combined timeline: Map<LocalDateTime, String>
+        List<Map.Entry<LocalDateTime, String>> timeline = new ArrayList<>();
 
-        // 2. Print every invoice in the list
-        if (invoices.isEmpty()) {
-            System.out.println("No invoices found.");
-        } else {
-            for (Invoice invoice : invoices) {
-                // Reusing your existing line formatter
-                System.out.println(formatInvoiceLine(invoice));
+        DateTimeFormatter europeanFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+        // 2. Add all invoices to timeline
+        for (Invoice invoice : invoices) {
+            String line = String.format(
+                    "%s | Charging Session %s | Item No %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: %s",
+                    invoice.getStartTime().format(europeanFormatter),
+                    invoice.getInvoiceItemNumber(),
+                    invoice.getInvoiceItemNumber(),
+                    invoice.getLocationName(),
+                    invoice.getChargingPointID(),
+                    invoice.getChargingMode(),
+                    invoice.getDurationMinutes(),
+                    String.format("%.2f", invoice.getEnergyUsedKwh()).replace('.', ','),  // European decimal
+                    String.format("%.2f", invoice.getPrice()).replace('.', ',')
+            );
+            timeline.add(Map.entry(invoice.getStartTime(), line));
+        }
+
+        // 3. Add all top-ups to timeline
+        List<Account> accounts = AccountManager.getInstance().getAccounts();
+        for (Account account : accounts) {
+            if (account.getCredit() != null) {
+                for (String topUpEntry : account.getCredit().getHistory()) {
+                    // Example entry: "Top-up | Amount: 50.00 | Date: 03-12-2025 11:30:00"
+                    String[] parts = topUpEntry.split("\\|");
+                    double amount = Double.parseDouble(parts[1].split(":")[1].trim().replace(',', '.'));
+                    LocalDateTime dateTime = LocalDateTime.parse(parts[2].split(": ")[1], europeanFormatter);
+
+                    String line = String.format(
+                            "%s | Top-up | Customer: %s | Amount: %s",
+                            dateTime.format(europeanFormatter),
+                            account.getCustomerID(),
+                            String.format("%.2f", amount).replace('.', ',')  // European decimal
+                    );
+
+                    timeline.add(Map.entry(dateTime, line));
+                }
             }
         }
 
-        List<String> topUps = CreditManager.getInstance().getAllTopUpHistories();
-        if (!topUps.isEmpty()) {
-            System.out.println("\nCredit Top-Ups:");
-            for (String entry : topUps) {
-                // Assume entries already formatted as "Top-up | Amount: XX,YY | Date: dd-MM-yyyy HH:mm:ss"
-                System.out.println(entry);
+        // 4. Sort the timeline ascending by date (oldest first)
+        timeline.sort(Map.Entry.comparingByKey());
+
+        // 5. Print combined timeline
+        for (Map.Entry<LocalDateTime, String> entry : timeline) {
+            System.out.println(entry.getValue());
+        }
+
+        // 6. Print outstanding balances per account
+        System.out.println("\nOutstanding Balances per Account:");
+        System.out.println("--------------------------------");
+        for (Account account : accounts) {
+            if (account.getCredit() != null) {
+                String formattedBalance = String.format("%.2f", account.getCredit().getAmount()).replace('.', ',');
+                System.out.println(
+                        "Customer " + account.getCustomerID() + " | Outstanding Balance: " + formattedBalance
+                );
             }
         }
     }
+
 
     public boolean isSortedByStartTime() {
         if (invoices.size() < 2) return true;

@@ -79,4 +79,19 @@ public class ChargingPointManager {
     public List<ChargingPoint> getChargingPoints() {
         return chargingPoints;
     }
+
+    public void deleteChargingPoint(String chargingPointId, Location location) {
+        if (location == null) {
+            throw new IllegalArgumentException("Location must exist");
+        }
+
+        // Remove from location
+        location.getChargingPoints()
+                .removeIf(cp -> cp.getChargingPointID().equals(chargingPointId));
+
+        // Remove from global charging network
+        ChargingPoint cp = getChargingPointById(chargingPointId);
+        chargingPoints.remove(cp);
+    }
+
 }

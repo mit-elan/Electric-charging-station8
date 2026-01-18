@@ -5,38 +5,39 @@ Feature: Read Invoices
 
   Background:
     Given a new InvoiceManager
-    Given a new Account Manager
-    Given a new Credit Manager
-    Given a new Charging Session Manager
+    And a new Account Manager
+    And a new Credit Manager
+    And a new Charging Session Manager
 
   Scenario: Customer views invoice overview with sessions and top-ups sorted chronologically
-    Given the following Customers exist:
-      | Customer ID | Initial Credit |
-      | CUST-1      | 30.00          |
-
-    And the following invoices exist for Customer "CUST-1":
-      | Item No | Start Time          | Location     | Charging Point | Mode | Duration | Energy Used | Price |
-      | 1       | 03-12-2025 10:00:00 | Highway Hub  | CP-DC-1        | DC   | 20       | 30.00       | 15.00 |
-      | 2       | 02-01-2026 08:30:00 | Main Station | CP-AC-1        | AC   | 60       | 11.00       | 5.50  |
+    Given the following accounts exist:
+      | Customer ID | Name        | Email           | Password |
+      | CUST-1       | Clara White | clara@mail.com  | pw123    |
 
     And the customer with ID "CUST-1" has made the following credit top ups:
       | Amount | Date of Update      |
       | 30.50  | 03-12-2025 11:30:00 |
       | 50.00  | 01-11-2025 14:42:00 |
 
+    And the following invoices exist for Customer "CUST-1":
+      | Item No | Start Time          | Location     | Charging Point | Mode | Duration | Energy Used | Price |
+      | 1       | 03-12-2025 10:00:00 | Highway Hub  | CP-DC-1        | DC   | 20       | 30.00       | 15.00 |
+      | 2       | 02-01-2026 08:30:00 | Main Station | CP-AC-1        | AC   | 60       | 11.00       | 5.50  |
+
+
+
     When the customer with ID "CUST-1" views their invoice overview
     Then the invoice overview shows:
-  """
-  Invoice Overview for Customer: CUST-1
-  Item 2 | Start Time: 02-01-2026 08:30:00 | Location: Main Station | CP: CP-AC-1 | Mode: AC | Duration: 60 minutes | Energy used: 11,00 kWh | Price: 5,50
-  Item 1 | Start Time: 03-12-2025 10:00:00 | Location: Highway Hub | CP: CP-DC-1 | Mode: DC | Duration: 20 minutes | Energy used: 30,00 kWh | Price: 15,00
+    """
+    Invoice Overview for Customer: CUST-1
 
-  Credit Top-Ups:
-  Top-up | Amount: 30,50 | Date: 03-12-2025 11:30:00
-  Top-up | Amount: 50,00 | Date: 01-11-2025 14:42:00
+    01-11-2025 14:42:00 | Top-up | Amount: 50,00
+    03-12-2025 10:00:00 | Charging Session | Item No 1 | Location: Highway Hub | CP: CP-DC-1 | Mode: DC | Duration: 20 minutes | Energy used: 30,00 kWh | Price: 15,00
+    03-12-2025 11:30:00 | Top-up | Amount: 30,50
+    02-01-2026 08:30:00 | Charging Session | Item No 2 | Location: Main Station | CP: CP-AC-1 | Mode: AC | Duration: 60 minutes | Energy used: 11,00 kWh | Price: 5,50
 
-  Outstanding Balance: 90,00
-  """
+    Outstanding Balance: 60,00
+    """
 
   Scenario: Operator views all invoices for multiple customers
     Given each customer has topped up credit:

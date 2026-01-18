@@ -22,11 +22,17 @@ public class StartChargingSessionSteps {
         cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
     }
 
-    @Given("the Customer physically connects their car to Charging Point {string}")
-    public void the_charging_point_is_physically_connected(String cpId) {
-        ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
-        cp.connectVehicle(); // See Step 2 below
+    @When("the Customer {string} physically connects their car to Charging Point {string}")
+    public void the_customer_physically_connects_their_car_to_charging_point(
+            String customerId,
+            String chargingPointId
+    ) {
+        ChargingPoint cp =
+                chargingPointManager.getChargingPointById(chargingPointId);
+
+        cp.connectVehicle();
     }
+
 
     @When("the Customer {string} starts a charging session at Charging Point {string}")
     public void start_session(String custId, String cpId) {

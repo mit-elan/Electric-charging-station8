@@ -6,17 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Credit {
-    private double amount;          // Current Credit
+    private double amount = 0;          // Current Credit
     private LocalDateTime lastUpdated;     // Timestamp of last change
     private final List<String> history = new ArrayList<>();
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-    public Credit(double initialAmount) {
-        this.amount = initialAmount;
-        this.lastUpdated = LocalDateTime.now();
-    }
-
     public double getAmount() {
         return amount;
     }
@@ -82,5 +76,34 @@ public class Credit {
     public String toString() {
         return "Current Credit: " + amount;
     }
+
+    public static class TopUpEntry {
+        private final LocalDateTime dateTime;
+        private final double amount;
+
+        public TopUpEntry(LocalDateTime dateTime, double amount) {
+            this.dateTime = dateTime;
+            this.amount = amount;
+        }
+
+        public LocalDateTime getDateTime() { return dateTime; }
+        public double getAmount() { return amount; }
+    }
+
+    public List<TopUpEntry> getHistoryEntries() {
+        List<TopUpEntry> entries = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+        for (String s : history) {
+            // parse string like "Top-up | Amount: 30.50 | Date: 03-12-2025 11:30:00"
+            String[] parts = s.split("\\|");
+            double amount = Double.parseDouble(parts[1].split(":")[1].trim().replace(',', '.'));
+            LocalDateTime dateTime = LocalDateTime.parse(parts[2].split(": ")[1], formatter);
+            entries.add(new TopUpEntry(dateTime, amount));
+        }
+        return entries;
+    }
+
+
 
 }

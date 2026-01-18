@@ -115,10 +115,9 @@ public class ReadInvoicesSteps {
 
             if (account == null) {
                 accountManager.createAccountWithID(customerId, "Name-" + customerId, customerId + "@example.com", "password123");
-                creditManager.initializeCredit(customerId, 0);
                 account = accountManager.getAccount(customerId);
+                creditManager.topUpCredit(account, 0);
             }
-
 
             creditManager.addManualTopUp(
                     account,

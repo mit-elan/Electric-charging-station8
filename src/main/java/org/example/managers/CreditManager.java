@@ -19,39 +19,25 @@ public class CreditManager {
     // We don't need to clear anything here because the data lives in the Accounts
     public void clearCredits() {}
 
-    public void initializeCredit(String customerId, double initialAmount) {
-        if (customerId == null) {
-            throw new IllegalArgumentException("Customer ID cannot be null");
+    public void createCreditIfAbsent(Account account) {
+        if (account.getCredit() == null) {
+            account.setCredit(new Credit());
         }
-
-        if (initialAmount < 0) {
-            throw new IllegalArgumentException("Initial credit cannot be negative");
-        }
-
-        Account account = AccountManager.getInstance().readAccount(customerId);
-
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found for ID: " + customerId);
-        }
-
-        if (account.getCredit() != null) {
-            throw new IllegalStateException("Credit already initialized for this account");
-        }
-
-        account.setCredit(new Credit(initialAmount));
     }
 
     public void topUpCredit(Account account, double amount) {
-        if (account == null || account.getCredit() == null) {
-            throw new IllegalStateException("Account or credit not initialized");
+        if (account == null) {
+            throw new IllegalStateException("Account not found");
         }
+        createCreditIfAbsent(account);
         account.getCredit().addCredit(amount);
     }
 
     public void addManualTopUp(Account account, double amount, String date) {
-        if (account == null || account.getCredit() == null) {
-            throw new IllegalStateException("Account or credit not initialized");
+        if (account == null) {
+            throw new IllegalStateException("Account not found");
         }
+        createCreditIfAbsent(account);
         account.getCredit().addCreditManually(amount, date);
     }
 
