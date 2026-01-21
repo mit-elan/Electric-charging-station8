@@ -34,7 +34,8 @@ classDiagram
 
     class ChargingSessionManager {
         chargingSessions: ChargingSession [*]
-        +createChargingSession()
+        +startChargingSession()
+        +endChargingSession()
         +readChargingSession()
     }
 
@@ -60,7 +61,18 @@ classDiagram
     class Location {
         locationID: string
         address: string
+        name: string
+        +getTariffs()
+        +updatePricing()
     }
+
+    class Tariff {
+        chargingMode: ChargingMode
+        pricePerKWh: double
+        pricePerMinute: double
+        validFrom: string
+    }
+
 
     class ChargingPoint {
         chargingPointID: string
@@ -114,6 +126,7 @@ classDiagram
 %% Domain Relationships
     Account "1" *--> "1" Credit
     Location "1" *--> "0..*" ChargingPoint
+    Location "1" *--> "0..*" Tariff
     ChargingPoint "1" --> "0..*" ChargingSession
     Account "1" --> "0..*" ChargingSession
     ChargingSession "1" --> "1" Invoice

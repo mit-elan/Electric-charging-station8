@@ -15,17 +15,18 @@ public class ChargingSession {
     private Account account;
     private ChargingPoint chargingPoint;
     private boolean active = true;
+    private Tariff tariffAtStart;
 
     public ChargingSession(
             String sessionID,
             LocalDateTime startTime,
             ChargingPoint chargingPoint) {
+
         this.sessionID = sessionID;
         this.startTime = startTime;
         this.chargingPoint = chargingPoint;                 // reference
         this.chargingPointID = chargingPoint.getChargingPointID(); // snapshot
         this.chargingMode = chargingPoint.getMode();// snapshot
-
     }
 
 
@@ -57,6 +58,10 @@ public class ChargingSession {
         return chargingPoint;
     }
 
+    public void setTariffAtStart(Tariff tariff) {
+        this.tariffAtStart = tariff;
+    }
+
     public void setAccount(Account account) {
         this.account = account;
     }
@@ -84,9 +89,35 @@ public class ChargingSession {
         this.energyUsed = energyUsed;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrice() {
+        Tariff tariff = chargingPoint.getLocation().getTariffAt(
+                getStartTime(),
+                chargingPoint.getMode()
+        );
+
+        if (tariff == null) {
+            throw new IllegalStateException(
+                    "No tariff defined for location " + chargingPoint.getLocation().getLocationID()
+            );
+        }
+
+        double price =
+                energyUsed * tariff.getPricePerKwh()
+                        + duration * tariff.getPricePerMinute();
+
     }
+
+    public double calculatePrice() {
+        if (tariffAtStart == null) {
+            throw new IllegalStateException("No tariff set for session");
+        }
+
+        this.price =
+                (energyUsed * tariffAtStart.getPricePerKwh()) +
+                        (duration * tariffAtStart.getPricePerMinute());
+        return price;
+    }
+
 
     public double getPrice() {
         return price;
@@ -99,16 +130,17 @@ public class ChargingSession {
         return chargingPoint.getLocation().getName();
     }
 
-    public void endSession(double energyUsed, int duration, double price) {
-        if (!active) {
-            throw new IllegalStateException("Charging session already ended");
-        }
-
+    public void endSession(double energyUsed, int durationMinutes) {
         this.energyUsed = energyUsed;
-        this.duration = duration;
-        this.price = price;
-        this.active = false;
+        this.duration = durationMinutes;
+
+        if (tariffAtStart == null) {
+            throw new IllegalStateException("No tariff assigned to session");
+        }
+        active = false;
+        this.price = calculatePrice();
     }
+
 }
 
 

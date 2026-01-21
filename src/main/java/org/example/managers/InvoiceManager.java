@@ -99,15 +99,26 @@ public class InvoiceManager {
 
         // 3. Create fake ChargingSession
         ChargingSession fakeSession = new ChargingSession(
+
                 "MANUAL-" + itemNo,
                 parsedStartTime,
                 fakeChargingPoint
         );
 
+        Tariff fakeTariff = new Tariff(
+                chargingMode,
+                price / energyUsedKwh,   // pricePerKwh
+                0.0,                     // pricePerMinute (simplified)
+                parsedStartTime
+        );
+
+        fakeLocation.addTariff(fakeTariff);
+
         fakeSession.setAccount(account);
         fakeSession.setDuration(durationMinutes);
         fakeSession.setEnergyUsed(energyUsedKwh);
-        fakeSession.setPrice(price);
+        fakeSession.setTariffAtStart(fakeTariff);
+        fakeSession.calculatePrice();
 
         // 4. Create invoice from session (same path as real system)
         Invoice invoice = new Invoice(itemNo, fakeSession, account);
@@ -295,7 +306,7 @@ public class InvoiceManager {
 
             // Checking for DESCENDING (Newest first)
             // If the current invoice is BEFORE the next one, it's not sorted newest-first.
-            if (current.isBefore(next)) {
+            if (current.isAfter(next)) {
                 return false;
             }
         }

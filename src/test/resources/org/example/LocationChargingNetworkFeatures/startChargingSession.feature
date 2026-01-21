@@ -17,16 +17,16 @@ Feature: Start Charging Session
     And the following Locations exist:
       | Location ID | Address         | Name            |
       | LOC-200     | Energy Road 5   | East Station    |
-      | LOC-300     | New Road 300    | North Station   |
 
     And the Location "LOC-200" has charging Points
       | Charging Point ID | Mode |
       | CP-1              | AC   |
       | CP-2              | DC   |
 
-    And the Operator updates the pricing of Location "LOC-200" to:
-      | AC Price | DC Price |
-      | 0.35     | 0.60     |
+    And the Operator sets the pricing for Location "LOC-200" valid from "01-01-2026 08:00":
+      | Mode | Price per kWh | Price per minute |
+      | AC   | 0.35          | 0.05             |
+      | DC   | 0.60          | 0.10             |
 
     And the Charging Point "CP-1" is InOperationFree
 

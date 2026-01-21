@@ -54,20 +54,42 @@ public class ChargingPointManager {
         // 4. Set initial operating status
         chargingPoint.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
-        // 5. Set price based on Location pricing
-        if (chargingMode == ChargingMode.AC) {
-            chargingPoint.setPrice(location.getAcPrice());
-        } else if (chargingMode == ChargingMode.DC) {
-            chargingPoint.setPrice(location.getDcPrice());
-        }
-
-        // 6. Attach to location (domain invariant)
+        // 5. Attach to location (domain invariant)
         location.addChargingPoint(chargingPoint);
 
-        // 7. Register globally
+        // 6. Register globally
         chargingPoints.add(chargingPoint);
 
     }
+
+    public void createChargingPoint(Location location, String chargingPointID, String name, ChargingMode mode) {
+        if (location == null) {
+            throw new IllegalArgumentException("Location must not be null");
+        }
+        if (chargingPointID == null || mode == null) {
+            throw new IllegalArgumentException("Charging Point ID and Mode must not be null");
+        }
+
+        // 2. Prevent duplicate IDs
+        boolean exists = chargingPoints.stream()
+                .anyMatch(cp -> cp.getChargingPointID().equals(chargingPointID));
+        if (exists) {
+            throw new IllegalStateException(
+                    "Charging Point with ID " + chargingPointID + " already exists"
+            );
+        }
+        ChargingPoint cp = new ChargingPoint(location, chargingPointID, name, mode);
+
+        // 4. Set initial operating status
+        cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+
+        // 5. Attach to location (domain invariant)
+        location.addChargingPoint(cp);
+
+        // 6. Register globally
+        chargingPoints.add(cp);
+    }
+
 
     public ChargingPoint getChargingPointById(String id) {
         return chargingPoints.stream()

@@ -6,9 +6,9 @@ import org.example.enums.OperatingStatus;
 public class ChargingPoint {
     private final Location location;
     private final String chargingPointID;
+    private String chargingPointName = "";
     private final ChargingMode chargingMode;
     private OperatingStatus operatingStatus;
-    private double price;
     private boolean isPhysicallyConnected = false;
 
     public ChargingPoint(Location location, String chargingPointID, ChargingMode chargingMode) {
@@ -19,13 +19,16 @@ public class ChargingPoint {
         this.chargingPointID = chargingPointID;
         this.chargingMode = chargingMode;
         this.operatingStatus = OperatingStatus.IN_OPERATION_FREE;
+    }
 
-        // Initial price comes from Location
-        if (chargingMode == ChargingMode.AC) {
-            this.price = location.getAcPrice();
-        } else {
-            this.price = location.getDcPrice();
+    public ChargingPoint(Location location, String chargingPointID, String name, ChargingMode mode) {
+        if (location == null) {
+            throw new IllegalArgumentException("Location cannot be null.");
         }
+        this.location = location;
+        this.chargingPointID = chargingPointID;
+        this.chargingPointName = (name == null || name.isBlank()) ? chargingPointID : name;
+        this.chargingMode = mode;
     }
 
     public Location getLocation() {
@@ -48,10 +51,6 @@ public class ChargingPoint {
         this.operatingStatus = operatingStatus;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
     public void connectVehicle() {
         if (isPhysicallyConnected) {
             throw new IllegalStateException("Vehicle already connected");
@@ -68,20 +67,15 @@ public class ChargingPoint {
 
     public boolean isPhysicallyConnected() { return isPhysicallyConnected; }
 
-    /* Only Location may change pricing */
-    public void setPrice(double price) {
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative.");
-        }
-        this.price = price;
-    }
 
     @Override
     public String toString() {
-        return "ChargingPoint " + chargingPointID +
+        return "Name: " + chargingPointName +
                 " | Mode: " + chargingMode +
-                " | Price: " + price +
                 " | Status: " + operatingStatus;
     }
 
+    public String getChargingPointName() {
+        return chargingPointName;
+    }
 }
