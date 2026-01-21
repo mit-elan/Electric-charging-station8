@@ -58,7 +58,6 @@ public class EndChargingSessionSteps {
     }
 
 
-
     @Then("the charging session with ID {string} is stopped using {double} kWh over {int} minutes")
     public void the_charging_session_is_stopped(String sessionId, double energyUsed, int duration) {
         chargingSessionManager.endChargingSession(sessionId, energyUsed, duration);

@@ -7,6 +7,10 @@ Feature: Update charging point status
     Given a new Location Manager
     And a new Charging Point Manager
     And a Location with ID "LOC-1" and name "Main Location" and address "Main Address"
+    And the Operator sets the pricing for Location "LOC-1" valid from "01-01-2026 08:00":
+      | Mode | Price per kWh | Price per minute |
+      | AC   | 0.35          | 0.05             |
+      | DC   | 0.60          | 0.10             |
     And the Operator creates a Charging Point with ID "CP-001", mode "DC", at Location "LOC-1"
     And the following Customers exist:
       | Customer ID | Initial Credit |

@@ -1,10 +1,6 @@
 package org.example.managers;
 
-import org.example.entities.Account;
-import org.example.entities.ChargingPoint;
-import org.example.entities.ChargingSession;
-import org.example.entities.Location;
-import org.example.enums.ChargingMode;
+import org.example.entities.*;
 import org.example.enums.OperatingStatus;
 
 import java.time.LocalDateTime;
@@ -35,9 +31,22 @@ public class ChargingSessionManager {
         return chargingSessions;
     }
 
-    public void createChargingSession(Account account, ChargingPoint chargingPoint) {
 
-        if (account == null || chargingPoint == null) {
+    public void createChargingSession(Account account, ChargingPoint chargingPoint) {
+        Location location = locationManager.getLocationByChargingPoint(
+                chargingPoint.getChargingPointID()
+        );
+
+        Tariff applicableTariff = location.getTariffAt(
+                LocalDateTime.now(),
+                chargingPoint.getMode()
+        );
+
+        if (applicableTariff == null) {
+            throw new IllegalStateException("No valid tariff found for charging point");
+        }
+
+        if (account == null) {
             throw new IllegalArgumentException("Account and Charging Point must exist");
         }
 
@@ -65,7 +74,10 @@ public class ChargingSessionManager {
         session.setAccount(account);
         session.setChargingPoint(chargingPoint);
         chargingPoint.setOperatingStatus(OperatingStatus.OCCUPIED);
+        session.setTariffAtStart(applicableTariff);
         chargingSessions.add(session);
+
+
 
     }
 
@@ -74,7 +86,30 @@ public class ChargingSessionManager {
             Account account,
             ChargingPoint chargingPoint,
             LocalDateTime startTime
-    ) {
+    )
+    {
+        Tariff applicableTariff = chargingPoint.getLocation().getTariffAt(
+                LocalDateTime.now(),
+                chargingPoint.getMode()
+        );
+        if (applicableTariff == null) {
+            throw new IllegalStateException("No valid tariff found for charging point");
+        }
+
+        if (account == null) {
+            throw new IllegalArgumentException("Account and Charging Point must exist");
+        }
+
+        // Acceptance Criteria: Check for sufficient credit
+        if (account.getCredit().getAmount() <= 0) {
+            throw new IllegalStateException("Insufficient credit to start session");
+        }
+
+        // Acceptance Criteria: Check Operating Status
+        if (chargingPoint.getOperatingStatus() != OperatingStatus.IN_OPERATION_FREE) {
+            throw new IllegalStateException("Charging Point is not available.");
+        }
+
         ChargingSession session = new ChargingSession(
                 sessionId,
                 startTime,
@@ -84,6 +119,7 @@ public class ChargingSessionManager {
         session.setAccount(account);
         chargingPoint.setOperatingStatus(OperatingStatus.OCCUPIED);
         chargingPoint.connectVehicle();
+        session.setTariffAtStart(applicableTariff);
 
         chargingSessions.add(session);
         return session;
@@ -98,27 +134,22 @@ public class ChargingSessionManager {
                 .orElseThrow(() -> new IllegalArgumentException("Session not found"));
 
         ChargingPoint cp = session.getChargingPoint();
-        Location location = locationManager.getLocationByChargingPoint(session.getChargingPointID());
-
-        // Determine price based on Mode
-        double pricePerKwh = (cp.getMode() == ChargingMode.AC)
-                ? location.getAcPrice()
-                : location.getDcPrice();
-
-        double price = energyUsed * pricePerKwh;
-
-        //SINGLE LINE that ends the session
-        session.endSession(energyUsed, duration, price);
+        // 🔹 SINGLE SOURCE OF TRUTH
+        session.endSession(energyUsed, duration);
 
         // External effects
         cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
         cp.disconnectVehicle();
 
-        session.getAccount().getCredit().subtractCredit(price);
+        // 🔹 subtract EXACT session price
+        session.getAccount()
+                .getCredit()
+                .subtractCredit(session.getPrice());
 
+        // 🔹 Invoice uses session price
         InvoiceManager.getInstance().createInvoiceFromSession(session);
-
     }
+
 
     public ChargingSession getChargingSessionById(String sessionId) {
         return chargingSessions.stream()

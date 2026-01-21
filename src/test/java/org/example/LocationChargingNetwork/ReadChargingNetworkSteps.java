@@ -5,8 +5,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.example.entities.ChargingPoint;
-import org.example.entities.Location;
+import org.example.entities.*;
 import org.example.enums.ChargingMode;
 import org.example.enums.OperatingStatus;
 import org.example.managers.ChargingPointManager;
@@ -56,32 +55,95 @@ public class ReadChargingNetworkSteps {
         }
     }
 
+    @And("the following tariffs exists:")
+    public void the_following_tariffs_exists(DataTable dataTable) {
+
+        for (Map<String, String> row : dataTable.asMaps()) {
+            Location location = locationManager.getLocationByID(row.get("locationID"));
+            assertNotNull(location, "Location must exist");
+
+            // AC tariff
+            location.addTariff(new Tariff(
+                    ChargingMode.AC,
+                    Double.parseDouble(row.get("AC price/kWh")),
+                    Double.parseDouble(row.get("AC price/min")),
+                    java.time.LocalDateTime.now()
+            ));
+
+            // DC tariff
+            location.addTariff(new Tariff(
+                    ChargingMode.DC,
+                    Double.parseDouble(row.get("DC price/kWh")),
+                    Double.parseDouble(row.get("DC price/min")),
+                    java.time.LocalDateTime.now()
+            ));
+        }
+    }
+
+    @And("a charging session exists at Charging Point {string}")
+    public void a_charging_session_exists_at_charging_point(String chargingPointId) {
+
+        ChargingPoint chargingPoint =
+                chargingPointManager.getChargingPointById(chargingPointId);
+
+        assertNotNull(chargingPoint, "Charging Point must exist");
+
+        // Fake account (internal only)
+        Account fakeAccount = new Account(
+                "FAKE-CUST",
+                "Fake Customer",
+                "fake@mail.com",
+                "password"
+        );
+
+        // Create session
+        ChargingSession session = new ChargingSession(
+                "FAKE-SESSION-" + chargingPointId,
+                java.time.LocalDateTime.now(),
+                chargingPoint
+        );
+
+        session.setAccount(fakeAccount);
+    }
+
+
+
 
     @When("the customer reads the Charging Network")
     public void the_customer_reads_the_charging_network() {
         locations = locationManager.getAllLocations();
     }
 
-    @Then("a list of Locations is shown")
-    public void a_list_of_locations_is_shown() {
+    @Then("a list of all Locations is shown")
+    public void a_list_of_all_locations_is_shown() {
         assertNotNull(locations);
         assertFalse(locations.isEmpty());
     }
+
+    @And("each Location shows its current tariffs")
+    public void each_location_shows_its_current_tariffs() {
+
+        for (Location location : locations) {
+            assertNotNull(location.getTariffs());
+            assertFalse(location.getTariffs().isEmpty());
+
+            boolean hasAC = location.getTariffs().stream()
+                    .anyMatch(t -> t.getMode() == ChargingMode.AC);
+
+            boolean hasDC = location.getTariffs().stream()
+                    .anyMatch(t -> t.getMode() == ChargingMode.DC);
+
+            assertTrue(hasAC, "Location must have AC tariff");
+            assertTrue(hasDC, "Location must have DC tariff");
+        }
+    }
+
 
     @And("each Location shows its Charging Points")
     public void each_location_shows_its_charging_points() {
         for (Location location : locations) {
             assertNotNull(location.getChargingPoints());
             assertFalse(location.getChargingPoints().isEmpty());
-        }
-    }
-
-    @And("each Charging Point shows its price")
-    public void each_charging_point_shows_its_price() {
-        for (Location location : locations) {
-            for (ChargingPoint chargingPoint : location.getChargingPoints()) {
-                assertTrue(chargingPoint.getPrice() >= 0);
-            }
         }
     }
 

@@ -2,16 +2,17 @@ package org.example.entities;
 
 import org.example.enums.ChargingMode;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Location {
     private final String locationID;
     private String name;
     private String address;
-    private double acPrice;
-    private double dcPrice;
     private final List<ChargingPoint> chargingPoints = new ArrayList<>();
+    private final List<Tariff> tariffs = new ArrayList<>();
 
     public Location(String locationID, String name, String address) {
         if (locationID == null || name == null || address == null) {
@@ -34,45 +35,28 @@ public class Location {
         return address;
     }
 
-    public double getAcPrice() {
-        return acPrice;
+    public void addTariff(Tariff tariff) {
+        if (tariff == null) {
+            throw new IllegalArgumentException("Tariff cannot be null");
+        }
+        tariffs.add(tariff);
     }
 
-    public double getDcPrice() {
-        return dcPrice;
-    }
-
-    public void setAcPrice(double price) {
-        if (price < 0) throw new IllegalArgumentException("AC price cannot be negative.");
-        this.acPrice = price;
-    }
-
-    public void setDcPrice(double price) {
-        if (price < 0) throw new IllegalArgumentException("DC price cannot be negative.");
-        this.dcPrice = price;
+    public Tariff getTariffAt(LocalDateTime time, ChargingMode mode) {
+        return tariffs.stream()
+                .filter(t -> t.getMode() == mode)
+                .filter(t -> !t.getValidFrom().isAfter(time))
+                .max((a, b) -> a.getValidFrom().compareTo(b.getValidFrom()))
+                .orElse(null);
     }
 
 
-    // Placeholder setters for future updates (US 1.2)
     public void setName(String name) {
         this.name = name;
     }
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setPricing(double acPrice, double dcPrice) {
-        setAcPrice(acPrice);
-        setDcPrice(dcPrice);
-
-        for (ChargingPoint chargingPoint : chargingPoints) {
-            if (chargingPoint.getMode() == ChargingMode.AC) {
-                chargingPoint.setPrice(acPrice);
-            } else if (chargingPoint.getMode() == ChargingMode.DC) {
-                chargingPoint.setPrice(dcPrice);
-            }
-        }
     }
 
     public void addChargingPoint(ChargingPoint cp) {
@@ -86,16 +70,42 @@ public class Location {
         return chargingPoints;
     }
 
+    public List<Tariff> getTariffs() {
+        return tariffs;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Location ")
+        sb.append("Location ID: ")
                 .append(locationID)
-                .append(" | ")
+                .append(" | Location name: ")
                 .append(name)
-                .append(" | ")
+                .append(" | Location address: ")
                 .append(address)
                 .append("\n");
+
+        // 2. Pricing Table (Current Tariffs)
+        sb.append("| Mode | Price per kWh | Price per minute | Valid from       |\n");
+
+        // Find the unique modes currently available in tariffs
+        List<ChargingMode> modes = tariffs.stream()
+                .map(Tariff::getMode)
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (ChargingMode mode : modes) {
+            // Get the tariff currently valid for this mode
+            Tariff activeTariff = getTariffAt(LocalDateTime.now(), mode);
+
+            if (activeTariff != null) {
+                sb.append(String.format("| %-4s | %-13.2f | %-16.2f | %-16s |\n",
+                        activeTariff.getMode(),
+                        activeTariff.getPricePerKwh(),
+                        activeTariff.getPricePerMinute(),
+                        activeTariff.getValidFrom()));
+            }
+        }
 
         sb.append("  Charging Points:\n");
 

@@ -1,7 +1,10 @@
 package org.example.managers;
 
 import org.example.entities.Location;
+import org.example.entities.Tariff;
+import org.example.enums.ChargingMode;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,13 +95,28 @@ public class LocationManager {
     }
 
 
-    public void updateLocationPricing(String locationID, double acPrice, double dcPrice) {
+    public void updateLocationPricing(
+            String locationID,
+            ChargingMode mode,
+            double pricePerKwh,
+            double pricePerMinute,
+            LocalDateTime validFrom
+    ) {
         Location location = getLocation(locationID);
         if (location == null) {
             throw new IllegalArgumentException("Location not found: " + locationID);
         }
-        location.setPricing(acPrice, dcPrice);
+
+        Tariff tariff = new Tariff(
+                mode,
+                pricePerKwh,
+                pricePerMinute,
+                validFrom
+        );
+
+        location.addTariff(tariff);
     }
+
 
     public Location getLocationByChargingPoint(String cpId) {
         for (Location loc : locations) {
