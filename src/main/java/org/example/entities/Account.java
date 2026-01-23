@@ -7,7 +7,6 @@ public class Account {
     private String name;
     private String email;
     private String password;
-
     private Credit credit;
 
 
@@ -16,7 +15,7 @@ public class Account {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.credit = null;
+        this.credit = new Credit();
     }
 
     public String getCustomerID() {

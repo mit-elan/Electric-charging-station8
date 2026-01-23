@@ -54,4 +54,11 @@ public class Invoice {
     public String getInvoiceItemNumber() {
         return invoiceItemNumber;
     }
+    public ChargingSession getSession() {
+        return session;
+    }
+
+    public ChargingSession getChargingSession() {
+        return session;
+    }
 }

@@ -1,6 +1,5 @@
 package org.example.ChargingPointSteps;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.example.entities.ChargingPoint;
@@ -36,7 +35,7 @@ public class UpdateCpStatusSteps {
         ChargingPoint chargingPoint =
                 chargingPointManager.getChargingPointById(chargingPointId);
 
-        chargingPoint.setOperatingStatus(
+        chargingPoint.updateOperatingStatus(
                 OperatingStatus.valueOf(newStatus)
         );
     }

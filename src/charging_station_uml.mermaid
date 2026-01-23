@@ -4,6 +4,7 @@ classDiagram
     }
 
     class AccountManager {
+        INSTANCE AccountManager
         accounts: Account [*]
         +createAccount()
         +readAccount()
@@ -12,11 +13,12 @@ classDiagram
     }
 
     class CreditManager {
+        INSTANCE CreditManager
         +topUpCredit()
-        +readCredit()
     }
 
     class LocationManager {
+        INSTANCE LocationManager
         locations: Location [*]
         +createLocation()
         +updateLocationPricing()
@@ -26,23 +28,26 @@ classDiagram
     }
 
     class ChargingPointManager {
+        INSTANCE ChargingPointManager
         chargingPoints: ChargingPoint [*]
         +createChargingPoint()
-        +updateChargingPoint()
         +deleteChargingPoint()
     }
 
     class ChargingSessionManager {
+        INSTANCE ChargingSessionManager
         chargingSessions: ChargingSession [*]
-        +startChargingSession()
+        +createChargingSession(Account, ChargingPoint)
         +endChargingSession()
         +readChargingSession()
     }
 
     class InvoiceManager {
+        INSTANCE InvoiceManager
         invoices: Invoice [*]
-        +createInvoiceFromSession(ChargingSession)
-        +readInvoice
+        +createInvoiceFromSession()
+        +readFinancialHistoryForAccount
+        +readGlobalFinancialHistory
     }
 
     class Account {
@@ -50,43 +55,61 @@ classDiagram
         name: string
         email: string
         password: string
+        credit: Credit
     }
 
     class Credit {
-        creditHistroy: Credit [*]
+        history: Transaction [*]
         amount: double
-        lastUpdated: string
+        lastUpdated: LocalDateTime
+        +addCredit()
+        +subtractCredit()
     }
+
+    class Tariff {
+        mode: ChargingMode
+        pricePerKwh: double
+        pricePerMinute: double
+        validFrom: LocalDateTime
+    }
+
 
     class Location {
         locationID: string
         address: string
         name: string
-        +getTariffs()
-        +updatePricing()
-    }
-
-    class Tariff {
-        chargingMode: ChargingMode
-        pricePerKWh: double
-        pricePerMinute: double
-        validFrom: string
+        chargingPoints: List<ChargingPoint>
+        tariffs: List<Tariff>
+        +addChargingPoint
+        +addTariff
+        +readTariffAt
     }
 
 
     class ChargingPoint {
         chargingPointID: string
+        chargingPointName: string
         operatingStatus: OperatingStatus
+        location: Location
+        isPhysicallyConnected: boolean
+
+        +updateOperatingStatus(Operating Status)
+        +connectVehicle()
+        +disconnectVehicle()
     }
 
     class ChargingSession {
         sessionID: string
+        chargingPoint: ChargingPoint
+        active: boolean
+        account: Account
+        tariffAtStart: Tariff
         startTime: string
         duration: integer
-        chargingMode: ChargingMode
-        chargingPointID: string
         energyUsed: double
         price: double
+        +endSession
+        +calculatePrice
     }
 
     class Invoice {
@@ -96,34 +119,31 @@ classDiagram
     }
 
     class OperatingStatus {
-        <<enumeration>>
         InOperationFree
         Occupied
         OutOfOrder
     }
 
     class ChargingMode {
-        <<enumeration>>
         AC
         DC
     }
 
-%% System Aggregation
+    <<enumeration>> OperatingStatus
+    <<enumeration>> ChargingMode
+
     ElectricFillingStationNetwork "1" *--> "1" AccountManager
     ElectricFillingStationNetwork "1" *--> "1" CreditManager
     ElectricFillingStationNetwork "1" *--> "1" LocationManager
     ElectricFillingStationNetwork "1" *--> "1" ChargingPointManager
     ElectricFillingStationNetwork "1" *--> "1" ChargingSessionManager
     ElectricFillingStationNetwork "1" *--> "1" InvoiceManager
-
-%% Manager to Entity
-    CreditManager "1" *--> "*" Credit
+    CreditManager ..>  Credit : creates
     AccountManager "1" *--> "*" Account
     LocationManager "1" *--> "*" Location
-    ChargingPointManager "1" *--> "*" ChargingPoint
+    ChargingPointManager ..> ChargingPoint : creates
     ChargingSessionManager "1" *--> "*" ChargingSession
     InvoiceManager "1" *--> "*" Invoice
-%% Domain Relationships
     Account "1" *--> "1" Credit
     Location "1" *--> "0..*" ChargingPoint
     Location "1" *--> "0..*" Tariff

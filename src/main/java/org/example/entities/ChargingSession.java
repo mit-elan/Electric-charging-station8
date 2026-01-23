@@ -89,32 +89,14 @@ public class ChargingSession {
         this.energyUsed = energyUsed;
     }
 
-    public void setPrice() {
-        Tariff tariff = chargingPoint.getLocation().getTariffAt(
-                getStartTime(),
-                chargingPoint.getMode()
-        );
-
-        if (tariff == null) {
-            throw new IllegalStateException(
-                    "No tariff defined for location " + chargingPoint.getLocation().getLocationID()
-            );
-        }
-
-        double price =
-                energyUsed * tariff.getPricePerKwh()
-                        + duration * tariff.getPricePerMinute();
-
-    }
-
     public double calculatePrice() {
         if (tariffAtStart == null) {
             throw new IllegalStateException("No tariff set for session");
         }
 
         this.price =
-                (energyUsed * tariffAtStart.getPricePerKwh()) +
-                        (duration * tariffAtStart.getPricePerMinute());
+                (energyUsed * tariffAtStart.pricePerKwh()) +
+                        (duration * tariffAtStart.pricePerMinute());
         return price;
     }
 

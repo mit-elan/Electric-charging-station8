@@ -128,10 +128,10 @@ public class ReadChargingNetworkSteps {
             assertFalse(location.getTariffs().isEmpty());
 
             boolean hasAC = location.getTariffs().stream()
-                    .anyMatch(t -> t.getMode() == ChargingMode.AC);
+                    .anyMatch(t -> t.mode() == ChargingMode.AC);
 
             boolean hasDC = location.getTariffs().stream()
-                    .anyMatch(t -> t.getMode() == ChargingMode.DC);
+                    .anyMatch(t -> t.mode() == ChargingMode.DC);
 
             assertTrue(hasAC, "Location must have AC tariff");
             assertTrue(hasDC, "Location must have DC tariff");

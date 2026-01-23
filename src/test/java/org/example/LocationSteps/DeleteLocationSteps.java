@@ -17,8 +17,7 @@ public class DeleteLocationSteps {
             String name = row.get("Name");
             String address = row.get("Address");
 
-            Location location = new Location(ID, name, address);
-            locationManager.addLocation(location);
+            locationManager.createLocation(ID, name, address);
         }
     }
 

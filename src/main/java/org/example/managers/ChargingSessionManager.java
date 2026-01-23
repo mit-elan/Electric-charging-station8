@@ -37,7 +37,7 @@ public class ChargingSessionManager {
                 chargingPoint.getChargingPointID()
         );
 
-        Tariff applicableTariff = location.getTariffAt(
+        Tariff applicableTariff = location.readTariffAt(
                 LocalDateTime.now(),
                 chargingPoint.getMode()
         );
@@ -73,7 +73,7 @@ public class ChargingSessionManager {
 
         session.setAccount(account);
         session.setChargingPoint(chargingPoint);
-        chargingPoint.setOperatingStatus(OperatingStatus.OCCUPIED);
+        chargingPoint.updateOperatingStatus(OperatingStatus.OCCUPIED);
         session.setTariffAtStart(applicableTariff);
         chargingSessions.add(session);
 
@@ -88,7 +88,7 @@ public class ChargingSessionManager {
             LocalDateTime startTime
     )
     {
-        Tariff applicableTariff = chargingPoint.getLocation().getTariffAt(
+        Tariff applicableTariff = chargingPoint.getLocation().readTariffAt(
                 LocalDateTime.now(),
                 chargingPoint.getMode()
         );
@@ -101,7 +101,7 @@ public class ChargingSessionManager {
         }
 
         // Acceptance Criteria: Check for sufficient credit
-        if (account.getCredit().getAmount() <= 0) {
+        if (account.getCredit() == null || account.getCredit().getAmount() <= 0) {
             throw new IllegalStateException("Insufficient credit to start session");
         }
 
@@ -117,7 +117,7 @@ public class ChargingSessionManager {
         );
 
         session.setAccount(account);
-        chargingPoint.setOperatingStatus(OperatingStatus.OCCUPIED);
+        chargingPoint.updateOperatingStatus(OperatingStatus.OCCUPIED);
         chargingPoint.connectVehicle();
         session.setTariffAtStart(applicableTariff);
 
@@ -138,7 +138,7 @@ public class ChargingSessionManager {
         session.endSession(energyUsed, duration);
 
         // External effects
-        cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+        cp.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
         cp.disconnectVehicle();
 
         // 🔹 subtract EXACT session price

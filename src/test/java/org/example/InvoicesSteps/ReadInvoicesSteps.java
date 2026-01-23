@@ -78,7 +78,7 @@ public class ReadInvoicesSteps {
         outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
-        invoiceManager.printInvoiceOverviewForAccount(account);
+        invoiceManager.readFinancialHistoryForAccount(account);
 
         // Restore System.out
         System.setOut(originalOut);
@@ -157,7 +157,7 @@ public class ReadInvoicesSteps {
     public void the_operator_views_all_invoices() {
         // 1. Sort the master list globally so the isSorted check passes
         invoiceManager.getAllInvoices().sort((a, b) -> b.getStartTime().compareTo(a.getStartTime()));
-        invoiceManager.printGlobalInvoiceHistory();
+        invoiceManager.readGlobalFinancialHistory();
     }
 
     @Then("a list of charging sessions is shown sorted by start time")
