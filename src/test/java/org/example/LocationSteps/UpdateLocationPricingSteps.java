@@ -64,13 +64,13 @@ public class UpdateLocationPricingSteps {
                     LocalDateTime.parse(row.get("Valid from"), FORMATTER);
 
             Tariff tariff = tariffs.stream()
-                    .filter(t -> t.getMode() == mode)
+                    .filter(t -> t.mode() == mode)
                     .findFirst()
                     .orElseThrow();
 
-            Assertions.assertEquals(expectedKwh, tariff.getPricePerKwh());
-            Assertions.assertEquals(expectedMinute, tariff.getPricePerMinute());
-            Assertions.assertEquals(expectedValidFrom, tariff.getValidFrom());
+            Assertions.assertEquals(expectedKwh, tariff.pricePerKwh());
+            Assertions.assertEquals(expectedMinute, tariff.pricePerMinute());
+            Assertions.assertEquals(expectedValidFrom, tariff.validFrom());
         }
     }
 }

@@ -10,7 +10,7 @@ import java.util.*;
 public class InvoiceManager {
 
     private static final InvoiceManager INSTANCE = new InvoiceManager();
-    private final List<Invoice> invoices = new ArrayList<>();
+    private static final List<Invoice> invoices = new ArrayList<>();
     private int invoiceCounter = 0;
 
     private InvoiceManager() {
@@ -149,33 +149,10 @@ public class InvoiceManager {
         return result;
     }
 
-    private String formatInvoiceLine(Invoice invoice) {
-        // European format for date
-        DateTimeFormatter europeanFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String formattedStartTime = invoice.getStartTime().format(europeanFormatter);
-
-        // European decimal format (comma instead of dot)
-        String formattedEnergy = String.format("%.2f", invoice.getEnergyUsedKwh());
-        String formattedPrice = String.format("%.2f", invoice.getPrice());
-
-        return String.format(
-                "Item %s | Customer: %s | Start Time: %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: %s",
-                invoice.getInvoiceItemNumber(),
-                invoice.getAccount().getCustomerID(),
-                formattedStartTime,
-                invoice.getLocationName(),
-                invoice.getChargingPointID(),
-                invoice.getChargingMode(),
-                invoice.getDurationMinutes(),
-                formattedEnergy,
-                formattedPrice
-        );
-    }
-
-    public void printInvoiceOverviewForAccount(Account account) {
+    public void readFinancialHistoryForAccount(Account account) {
         if (account == null) return;
 
-        System.out.println("Invoice Overview for Customer: " + account.getCustomerID());
+        System.out.println("Invoice Overview for Customer: " + account.getName() + "\nCustomer ID:" + account.getCustomerID());
         System.out.println();
 
         // 1. Get invoices
@@ -191,10 +168,10 @@ public class InvoiceManager {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         for (Invoice invoice : customerInvoices) {
             String line = String.format(
-                    "Charging Session | Item No %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %.2f kWh | Price: %.2f",
+                    "Charging Session | Invoice Item No: %s | Location Name: %s | Charging Point Name: %s | Mode: %s | Duration: %d minutes | Energy used: %.2f kWh | Price: %.2f",
                     invoice.getInvoiceItemNumber(),
                     invoice.getLocationName(),
-                    invoice.getChargingPointID(),
+                    invoice.getChargingSession().getChargingPoint().getChargingPointName(),
                     invoice.getChargingMode(),
                     invoice.getDurationMinutes(),
                     invoice.getEnergyUsedKwh(),
@@ -213,7 +190,7 @@ public class InvoiceManager {
         }
 
         // 4. Sort by date/time
-        timeline.sort(Comparator.comparing(Map.Entry::getKey));
+        timeline.sort(Map.Entry.comparingByKey());
 
         // 5. Print unified list
         for (Map.Entry<LocalDateTime, String> entry : timeline) {
@@ -227,7 +204,7 @@ public class InvoiceManager {
 
 
 
-    public void printGlobalInvoiceHistory() {
+    public void readGlobalFinancialHistory() {
         System.out.println("Global Invoice and Top-up History (Sorted by Date and Time)");
         System.out.println("------------------------------------------------");
 
@@ -290,7 +267,7 @@ public class InvoiceManager {
             if (account.getCredit() != null) {
                 String formattedBalance = String.format("%.2f", account.getCredit().getAmount()).replace('.', ',');
                 System.out.println(
-                        "Customer " + account.getCustomerID() + " | Outstanding Balance: " + formattedBalance
+                        "Customer ID: " + account.getCustomerID() + "| Customer Name: "+ account.getName() + " | Outstanding Balance: " + formattedBalance
                 );
             }
         }
@@ -347,5 +324,42 @@ public class InvoiceManager {
             }
         }
         return false;
+    }
+
+    public static void printInvoiceBySessionId(String sessionId) {
+        // 1. Find the invoice that contains the session with this ID
+        Invoice targetInvoice = invoices.stream()
+                .filter(inv -> inv.getSession().getSessionID().equals(sessionId))
+                .findFirst()
+                .orElse(null);
+
+        if (targetInvoice == null) {
+            System.out.println("\u001B[31m[ERROR] No invoice found for Session ID: " + sessionId + "\u001B[0m");
+            return;
+        }
+
+        // 2. Format and Print (Professional Box Format)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("                CHARGING INVOICE                ");
+        System.out.println("=".repeat(50));
+        System.out.printf("Invoice Item NR:    %s%n", targetInvoice.getInvoiceItemNumber());
+        System.out.printf("Session ID:    %s%n", sessionId);
+        System.out.printf("Date/Time:     %s%n", targetInvoice.getStartTime().format(formatter));
+        System.out.println("-".repeat(50));
+        System.out.printf("Customer:      %s (ID: %s)%n",
+                targetInvoice.getAccount().getName(),
+                targetInvoice.getAccount().getCustomerID());
+        System.out.printf("Location:      %s%n", targetInvoice.getLocationName());
+        System.out.printf("Point:         %s (%s)%n",
+                targetInvoice.getChargingPointID(),
+                targetInvoice.getChargingMode());
+        System.out.println("-".repeat(50));
+        System.out.printf("Duration:      %d minutes%n", targetInvoice.getDurationMinutes());
+        System.out.printf("Energy used:   %.2f kWh%n", targetInvoice.getEnergyUsedKwh());
+        System.out.println("-".repeat(50));
+        System.out.printf("TOTAL PRICE:   %.2f €%n", targetInvoice.getPrice());
+        System.out.println("=".repeat(50) + "\n");
     }
 }

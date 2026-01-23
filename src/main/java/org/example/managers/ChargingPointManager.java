@@ -52,7 +52,7 @@ public class ChargingPointManager {
         ChargingPoint chargingPoint = new ChargingPoint(location, chargingPointID, chargingMode);
 
         // 4. Set initial operating status
-        chargingPoint.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+        chargingPoint.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
         // 5. Attach to location (domain invariant)
         location.addChargingPoint(chargingPoint);
@@ -62,7 +62,7 @@ public class ChargingPointManager {
 
     }
 
-    public void createChargingPoint(Location location, String chargingPointID, String name, ChargingMode mode) {
+    public void createChargingPointWithName(Location location, String chargingPointID, String name, ChargingMode mode) {
         if (location == null) {
             throw new IllegalArgumentException("Location must not be null");
         }
@@ -81,7 +81,7 @@ public class ChargingPointManager {
         ChargingPoint cp = new ChargingPoint(location, chargingPointID, name, mode);
 
         // 4. Set initial operating status
-        cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+        cp.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
         // 5. Attach to location (domain invariant)
         location.addChargingPoint(cp);

@@ -46,10 +46,6 @@ public class LocationManager {
         return locations;
     }
 
-    public void addLocation(Location location) {
-        locations.add(location);
-    }
-
     public void deleteLocation(String locationId) {
         Location locationToRemove = null;
         for (Location location : locations) {

@@ -4,8 +4,8 @@ import org.example.enums.ChargingMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Location {
     private final String locationID;
@@ -42,11 +42,11 @@ public class Location {
         tariffs.add(tariff);
     }
 
-    public Tariff getTariffAt(LocalDateTime time, ChargingMode mode) {
+    public Tariff readTariffAt(LocalDateTime time, ChargingMode mode) {
         return tariffs.stream()
-                .filter(t -> t.getMode() == mode)
-                .filter(t -> !t.getValidFrom().isAfter(time))
-                .max((a, b) -> a.getValidFrom().compareTo(b.getValidFrom()))
+                .filter(t -> t.mode() == mode)
+                .filter(t -> !t.validFrom().isAfter(time))
+                .max(Comparator.comparing(Tariff::validFrom))
                 .orElse(null);
     }
 
@@ -90,20 +90,20 @@ public class Location {
 
         // Find the unique modes currently available in tariffs
         List<ChargingMode> modes = tariffs.stream()
-                .map(Tariff::getMode)
+                .map(Tariff::mode)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         for (ChargingMode mode : modes) {
             // Get the tariff currently valid for this mode
-            Tariff activeTariff = getTariffAt(LocalDateTime.now(), mode);
+            Tariff activeTariff = readTariffAt(LocalDateTime.now(), mode);
 
             if (activeTariff != null) {
-                sb.append(String.format("| %-4s | %-13.2f | %-16.2f | %-16s |\n",
-                        activeTariff.getMode(),
-                        activeTariff.getPricePerKwh(),
-                        activeTariff.getPricePerMinute(),
-                        activeTariff.getValidFrom()));
+                sb.append(String.format("| %-4s | €%-13.2f | €%-16.2f | %-16s |\n",
+                        activeTariff.mode(),
+                        activeTariff.pricePerKwh(),
+                        activeTariff.pricePerMinute(),
+                        activeTariff.validFrom()));
             }
         }
 

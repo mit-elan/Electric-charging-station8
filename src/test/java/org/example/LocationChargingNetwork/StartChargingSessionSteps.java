@@ -19,7 +19,7 @@ public class StartChargingSessionSteps {
     @Given("the Charging Point {string} is InOperationFree")
     public void the_charging_point_is_in_operation_free(String cpId) {
         ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
-        cp.setOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
+        cp.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
     }
 
     @When("the Customer {string} physically connects their car to Charging Point {string}")

@@ -47,7 +47,7 @@ public class ChargingPoint {
         return operatingStatus;
     }
 
-    public void setOperatingStatus(OperatingStatus operatingStatus) {
+    public void updateOperatingStatus(OperatingStatus operatingStatus) {
         this.operatingStatus = operatingStatus;
     }
 
