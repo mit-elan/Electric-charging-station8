@@ -30,3 +30,12 @@ Feature: Update charging point status
     Then the Customer "CUST-1" starts a charging session at Charging Point "CP-001"
     And a charging session exists for Customer "CUST-1" at Charging Point "CP-001"
     Then the status of charging point "CP-001" is "OCCUPIED"
+
+  Scenario: Error - Update status of non-existing charging point
+    When the operator attempts to set status of non-existing charging point "CP-999" to "OUT_OF_ORDER"
+    Then an exception is thrown or status update fails gracefully
+
+  Scenario: Edge Case - Set charging point to same status it already has
+    Given the status of charging point "CP-001" is "IN_OPERATION_FREE"
+    When the operator sets the status of charging point "CP-001" to "IN_OPERATION_FREE"
+    Then the status of charging point "CP-001" is "IN_OPERATION_FREE"

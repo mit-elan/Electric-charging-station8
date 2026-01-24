@@ -35,3 +35,12 @@ Feature: Create Charging Point
 
     And the Charging Point with ID "CP-104" exists at Location "LOC-1"
     And the Charging Point with ID "CP-104" has mode "DC"
+
+  Scenario: Error - Create Charging Point at non-existing Location
+    When the Operator attempts to create a Charging Point with ID "CP-ERROR" at non-existing Location "LOC-999"
+    Then an exception is thrown indicating location not found
+
+  Scenario: Edge Case - Create Charging Point with duplicate ID
+    Given the Operator creates a Charging Point with ID "CP-DUP", mode "AC", at Location "LOC-1"
+    When the Operator attempts to create another Charging Point with ID "CP-DUP", mode "DC", at Location "LOC-1"
+    Then an exception is thrown indicating duplicate charging point ID

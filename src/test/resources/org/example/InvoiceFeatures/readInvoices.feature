@@ -60,3 +60,17 @@ Feature: Read Invoices
     And each invoice entry contains charging and pricing details
     And top-up transactions are displayed
     And the current outstanding balance is displayed
+
+  Scenario: Error - View invoices for non-existing customer
+    When the customer with ID "NON-EXISTENT" attempts to view their invoice overview
+    Then an empty invoice list is returned
+
+  Scenario: Edge Case - View invoices with no charging sessions
+    Given the following accounts exist:
+      | Customer ID | Name      | Email          | Password |
+      | CUST-EMPTY  | Empty User| empty@mail.com | pw123    |
+    And the customer with ID "CUST-EMPTY" has made the following credit top ups:
+      | Amount | Date of Update      |
+      | 100.00 | 01-01-2026 10:00:00 |
+    When the customer with ID "CUST-EMPTY" views their invoice overview
+    Then the invoice overview shows only top-up information

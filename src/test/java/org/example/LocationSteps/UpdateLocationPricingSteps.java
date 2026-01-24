@@ -15,11 +15,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class UpdateLocationPricingSteps {
 
     private final LocationManager locationManager = LocationManager.getInstance();
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+    private Exception caughtException;
 
     @When("the Operator sets the pricing for Location {string} valid from {string}:")
     public void the_operator_sets_pricing_with_valid_from(
@@ -72,5 +78,28 @@ public class UpdateLocationPricingSteps {
             Assertions.assertEquals(expectedMinute, tariff.pricePerMinute());
             Assertions.assertEquals(expectedValidFrom, tariff.validFrom());
         }
+    }
+
+    @When("the Operator attempts to set pricing for Location {string} with negative values")
+    public void theOperatorAttemptsToSetPricingWithNegativeValues(String locationId) {
+        try {
+            Location location = locationManager.getLocation(locationId);
+            Tariff tariff = new Tariff(
+                    ChargingMode.AC,
+                    -0.50,  // negative price
+                    0.05,
+                    LocalDateTime.now()
+            );
+            location.addTariff(tariff);
+        } catch (IllegalArgumentException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating prices cannot be negative")
+    public void anExceptionIsThrownIndicatingPricesCannotBeNegative() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalArgumentException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("must not be negative"));
     }
 }

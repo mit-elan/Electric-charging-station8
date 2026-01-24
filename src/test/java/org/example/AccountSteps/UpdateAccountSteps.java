@@ -10,8 +10,11 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class UpdateAccountSteps {
     private final AccountManager accountManager = AccountManager.getInstance();
+    private Exception caughtException;
 
 
     @Given("an account exists with the following details:")
@@ -29,15 +32,17 @@ public class UpdateAccountSteps {
 
     @When("the customer updates the account with Customer ID {string} to:")
     public void the_customer_updates_the_account_with_customer_id_to(String customerID, DataTable dataTable) {
-        Map<String, String> data = dataTable.asMap(String.class, String.class);
-
-        // We call the update method from your Manager
-        accountManager.updateAccount(
-                customerID,
-                data.get("Name"),
-                data.get("Email"),
-                data.get("Password")
-        );
+        try {
+            Map<String, String> data = dataTable.asMap(String.class, String.class);
+            accountManager.updateAccount(
+                    customerID,
+                    data.get("Name"),
+                    data.get("Email"),
+                    data.get("Password")
+            );
+        } catch (IllegalArgumentException e) {
+            caughtException = e;
+        }
     }
 
     /* Optimized "Then" Step:
@@ -64,5 +69,17 @@ public class UpdateAccountSteps {
             default:
                 throw new IllegalArgumentException("Unknown field: " + field);
         }
+    }
+
+    @Then("an exception is thrown indicating no account was found for update")
+    public void anExceptionIsThrownIndicatingNoAccountWasFoundForUpdate() {
+        assertNotNull(caughtException, "Expected exception to be thrown");
+        assertInstanceOf(IllegalArgumentException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("No account found"));
+    }
+
+    @When("the customer updates only the password for Customer ID {string} to {string}")
+    public void theCustomerUpdatesOnlyThePasswordFor(String customerId, String newPassword) {
+        accountManager.updateAccount(customerId, null, null, newPassword);
     }
 }

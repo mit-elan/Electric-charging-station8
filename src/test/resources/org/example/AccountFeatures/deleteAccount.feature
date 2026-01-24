@@ -22,3 +22,17 @@ Feature: Delete Account
     When the admin deletes the account with Customer ID "9999"
     Then the total number of existing accounts is 1
     And an exception is thrown indicating no account was found
+
+  Scenario: Error - Delete account with null Customer ID
+    Given the following accounts exist:
+      | Customer ID | Name       | Email            | Password |
+      | 3001        | Test User  | test@mail.com    | pw123    |
+    When the admin deletes the account with Customer ID ""
+    Then an exception is thrown indicating no account was found
+
+  Scenario: Edge Case - Delete the last remaining account
+    Given the following accounts exist:
+      | Customer ID | Name        | Email           | Password |
+      | 4001        | Last User   | last@mail.com   | pw123    |
+    When the admin deletes the account with Customer ID "4001"
+    Then the total number of existing accounts is 0

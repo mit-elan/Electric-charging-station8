@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreateChargingPointSteps {
     private final LocationManager locationManager;
     private final ChargingPointManager chargingPointManager;
+    private Exception caughtException;
 
     // Background:
     //    Given a new Location Manager
@@ -50,5 +51,37 @@ public class CreateChargingPointSteps {
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Charging Point " + chargingPointID + " not found"));
         assertEquals(chargingMode, cp.getMode(), "Charging Point mode does not match");
+    }
+
+    @When("the Operator attempts to create a Charging Point with ID {string} at non-existing Location {string}")
+    public void theOperatorAttemptsToCreateChargingPointAtNonExistingLocation(String cpId, String locationId) {
+        try {
+            Location location = locationManager.getLocationByID(locationId);
+            chargingPointManager.createChargingPoint(location, cpId, ChargingMode.AC);
+        } catch (Exception e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating location not found")
+    public void anExceptionIsThrownIndicatingLocationNotFound() {
+        assertNotNull(caughtException);
+    }
+
+    @When("the Operator attempts to create another Charging Point with ID {string}, mode {string}, at Location {string}")
+    public void theOperatorAttemptsToCreateAnotherChargingPoint(String cpId, String mode, String locationId) {
+        try {
+            Location location = locationManager.getLocationByID(locationId);
+            chargingPointManager.createChargingPoint(location, cpId, ChargingMode.valueOf(mode));
+        } catch (IllegalStateException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating duplicate charging point ID")
+    public void anExceptionIsThrownIndicatingDuplicateChargingPointId() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalStateException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("already exists"));
     }
 }

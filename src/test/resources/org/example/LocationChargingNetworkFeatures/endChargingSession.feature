@@ -38,3 +38,13 @@ Feature: End Charging Session
     And an invoice is created for the charging session "CS-1"
     And the Charging Point "CP-1" is marked as InOperationFree
     And the remaining credit of Customer "CUST-1" is 1.50
+
+  Scenario: Error - End non-existing charging session
+    When the operator attempts to end charging session with ID "NON-EXISTENT"
+    Then an exception is thrown indicating session not found
+
+  Scenario: Edge Case - End session with zero energy consumed
+    Given an active charging session with ID "CS-ZERO" exists for Customer "CUST-1" at Charging Point "CP-1"
+    When the customer disconnects the vehicle from Charging Point "CP-1"
+    Then the charging session with ID "CS-ZERO" is stopped using 0.00 kWh over 5 minutes
+    And the price of the charging session "CS-ZERO" is 0.25

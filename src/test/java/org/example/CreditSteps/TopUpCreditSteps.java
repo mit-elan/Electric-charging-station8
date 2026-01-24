@@ -20,6 +20,8 @@ public class TopUpCreditSteps {
     private final CreditManager creditManager;
     private LocalDateTime creditUpdateTimestampBefore;
 
+    private Exception caughtException;
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public TopUpCreditSteps() {
@@ -98,5 +100,21 @@ public class TopUpCreditSteps {
                     "Credit last updated timestamp should be updated after top-up"
             );
         }
+    }
+
+    @When("the customer with ID {string} attempts to top up their credit with {double}")
+    public void theCustomerAttemptsToTopUpTheirCredit(String customerId, double amount) {
+        try {
+            creditManager.topUpCredit(accountManager.getAccount(customerId), amount);
+        } catch (IllegalArgumentException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating cannot add negative credit")
+    public void anExceptionIsThrownIndicatingCannotAddNegativeCredit() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalArgumentException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("negative"));
     }
 }

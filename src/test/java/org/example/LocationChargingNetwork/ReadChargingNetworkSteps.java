@@ -160,4 +160,16 @@ public class ReadChargingNetworkSteps {
             }
         }
     }
+
+    @Then("an empty location list is shown")
+    public void anEmptyLocationListIsShown() {
+        assertTrue(locations == null || locations.isEmpty());
+    }
+
+    @Then("the Location {string} shows message {string}")
+    public void theLocationShowsMessage(String locationId, String expectedMessage) {
+        Location location = locationManager.getLocationByID(locationId);
+        String output = location.toString();
+        assertTrue(output.contains(expectedMessage));
+    }
 }

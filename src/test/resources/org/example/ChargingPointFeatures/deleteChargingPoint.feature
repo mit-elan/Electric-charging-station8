@@ -16,3 +16,12 @@ Feature: Delete charging point from location
   Scenario: Deleted charging point is no longer visible in the charging network
     When the operator deletes the Charging Point with ID "CP-001" from Location "LOC-1"
     Then the Charging Point with ID "CP-001" is not shown in the Charging Network
+
+  Scenario: Error - Delete non-existing charging point
+    When the operator attempts to delete the Charging Point with ID "CP-999" from Location "LOC-1"
+    Then no exception is thrown and the location remains unchanged
+
+  Scenario: Edge Case - Delete charging point from location with no other charging points
+    Given the Location "LOC-1" has only one Charging Point "CP-001"
+    When the operator deletes the Charging Point with ID "CP-001" from Location "LOC-1"
+    Then the Location "LOC-1" has no charging points

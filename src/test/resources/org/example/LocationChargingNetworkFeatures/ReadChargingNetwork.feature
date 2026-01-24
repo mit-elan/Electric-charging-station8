@@ -41,3 +41,17 @@ Feature: Read Charging Network
     And each Location shows its current tariffs
     And each Charging Point shows its Operating Status
 
+  Scenario: Error - Read charging network when no locations exist
+    Given a new Location Manager
+    When the customer reads the Charging Network
+    Then an empty location list is shown
+
+  Scenario: Edge Case - Read charging network with location having no charging points
+    Given a new Charging Network with Locations
+      | locationID | name          | address          |
+      | LOC-EMPTY  | Empty Station | Empty Street 1   |
+    And the following tariffs exists:
+      | locationID | AC price/kWh | AC price/min | DC price/kWh | DC price/min |
+      | LOC-EMPTY  | 0.35         | 0.05         | 0.55         | 0.10         |
+    When the customer reads the Charging Network
+    Then the Location "LOC-EMPTY" shows message "Coming soon..."

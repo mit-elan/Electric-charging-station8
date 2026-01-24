@@ -16,6 +16,8 @@ public class StartChargingSessionSteps {
     private final ChargingSessionManager sessionManager = ChargingSessionManager.getInstance();
     private ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
 
+    private Exception caughtException;
+
     @Given("the Charging Point {string} is InOperationFree")
     public void the_charging_point_is_in_operation_free(String cpId) {
         ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
@@ -66,6 +68,31 @@ public class StartChargingSessionSteps {
     public void verify_occupied(String cpId) {
         ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
         assertEquals(OperatingStatus.OCCUPIED, cp.getOperatingStatus());
+    }
+
+    @When("the Customer {string} attempts to start a charging session at Charging Point {string}")
+    public void theCustomerAttemptsToStartAChargingSession(String custId, String cpId) {
+        try {
+            Account account = accountManager.getAccount(custId);
+            ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
+            sessionManager.createChargingSession(account, cp);
+        } catch (IllegalStateException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating insufficient credit")
+    public void anExceptionIsThrownIndicatingInsufficientCredit() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalStateException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("Insufficient credit"));
+    }
+
+    @Then("an exception is thrown indicating charging point not available")
+    public void anExceptionIsThrownIndicatingChargingPointNotAvailable() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalStateException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("not available"));
     }
 
     public ChargingPointManager getChargingPointManager() {

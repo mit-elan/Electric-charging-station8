@@ -17,3 +17,12 @@ Feature: Top Up Prepaid Credit
     Then the credit balance of Customer "CUST-1" is 30.00
     And the payment is processed successfully
     And the credit last updated date is stored
+
+  Scenario: Error - Top up with negative amount
+    When the customer with ID "CUST-1" attempts to top up their credit with -10.00
+    Then an exception is thrown indicating cannot add negative credit
+
+  Scenario: Edge Case - Top up with very large amount
+    When the customer with ID "CUST-1" tops up their credit with 999999.99
+    Then the credit balance of Customer "CUST-1" is 1000009.99
+    And the payment is processed successfully

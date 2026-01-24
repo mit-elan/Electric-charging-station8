@@ -12,3 +12,11 @@ Feature: Update Location Address
   Scenario: Successfully updating a Location address
     When the Operator updates the address of Location "LOC-300" to "New Avenue 25"
     Then the Location with Location ID "LOC-300" has Address "New Avenue 25"
+
+  Scenario: Error - Update address of non-existing location
+    When the Operator attempts to update address of Location "LOC-999" to "New Street"
+    Then an exception is thrown indicating location not found
+
+  Scenario: Edge Case - Update address to empty string
+    When the Operator attempts to update the address of Location "LOC-300" to ""
+    Then an exception is thrown indicating address cannot be empty

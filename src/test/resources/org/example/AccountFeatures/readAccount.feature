@@ -33,3 +33,10 @@ Feature: Read Account
     Customer ID: CUST-3, Name: Charlie Brown, Email: charlie@mail.com, Password: pw3
     """
 
+  Scenario: Error - Read non-existing account
+    When the customer requests the account with Customer ID "NON-EXISTENT-ID"
+    Then the retrieved account is null
+
+  Scenario: Edge Case - Read account list when empty
+    When the customer requests all accounts
+    Then the account list is empty

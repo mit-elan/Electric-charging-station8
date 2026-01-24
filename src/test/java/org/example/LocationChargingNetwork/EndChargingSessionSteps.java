@@ -22,6 +22,7 @@ public class EndChargingSessionSteps {
     private final InvoiceManager invoiceManager = InvoiceManager.getInstance();
 
     private ChargingSession activeSession;
+    private Exception caughtException;
 
     // ---------------------------------------------------
     // GIVEN
@@ -113,5 +114,21 @@ public class EndChargingSessionSteps {
                 account.getCredit().getAmount(),
                 0.001
         );
+    }
+
+    @When("the operator attempts to end charging session with ID {string}")
+    public void theOperatorAttemptsToEndChargingSession(String sessionId) {
+        try {
+            chargingSessionManager.endChargingSession(sessionId, 10.0, 10);
+        } catch (IllegalArgumentException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating session not found")
+    public void anExceptionIsThrownIndicatingSessionNotFound() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalArgumentException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("not found"));
     }
 }

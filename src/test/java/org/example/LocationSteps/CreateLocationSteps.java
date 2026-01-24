@@ -12,6 +12,10 @@ import org.junit.jupiter.api.Assertions;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class CreateLocationSteps {
     private final LocationManager locationManager = LocationManager.getInstance();
 
@@ -37,6 +41,22 @@ public class CreateLocationSteps {
                 throw e;
             }
         }
+    }
+
+    @When("the Operator attempts to create a Location with duplicate ID {string}")
+    public void theOperatorAttemptsToCreateLocationWithDuplicateId(String locationId) {
+        try {
+            locationManager.createLocation(locationId, "Duplicate Name", "Duplicate Address");
+        } catch (IllegalArgumentException e) {
+            caughtException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating location already exists")
+    public void anExceptionIsThrownIndicatingLocationAlreadyExists() {
+        assertNotNull(caughtException);
+        assertInstanceOf(IllegalArgumentException.class, caughtException);
+        assertTrue(caughtException.getMessage().contains("already exists"));
     }
 }
 

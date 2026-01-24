@@ -26,3 +26,15 @@ Feature: Update Location Pricing
       | Mode | Price per kWh | Price per minute | Valid from         |
       | AC   | 0.35          | 0.05             | 01-03-2026 08:00     |
       | DC   | 0.60          | 0.10             | 01-03-2026 08:00     |
+
+  Scenario: Error - Set negative pricing values
+    When the Operator attempts to set pricing for Location "LOC-200" with negative values
+    Then an exception is thrown indicating prices cannot be negative
+
+  Scenario: Edge Case - Set pricing with zero values
+    When the Operator sets the pricing for Location "LOC-200" valid from "01-04-2026 08:00":
+      | Mode | Price per kWh | Price per minute |
+      | AC   | 0.00          | 0.00             |
+    Then Location "LOC-200" has the following active tariffs:
+      | Mode | Price per kWh | Price per minute | Valid from       |
+      | AC   | 0.00          | 0.00             | 01-04-2026 08:00 |

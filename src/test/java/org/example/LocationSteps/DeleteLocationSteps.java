@@ -2,9 +2,15 @@ package org.example.LocationSteps;
 
 import io.cucumber.java.en.*;
 import org.example.entities.Location;
+import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
 import org.junit.jupiter.api.Assertions;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeleteLocationSteps {
     private final LocationManager locationManager = LocationManager.getInstance();
@@ -34,6 +40,28 @@ public class DeleteLocationSteps {
     public void the_location_does_not_exist(String locationID) {
         Location location = locationManager.getLocationByID(locationID);
         Assertions.assertNull(location, "Expected location " + locationID + " to be deleted, but it still exists.");
+    }
+
+    @When("the Operator attempts to delete the Location with Location ID {string}")
+    public void theOperatorAttemptsToDeleteLocation(String locationId) {
+        try {
+            locationManager.deleteLocation(locationId);
+        } catch (IllegalArgumentException e) {
+            capturedException = e;
+        }
+    }
+
+    @Then("an exception is thrown indicating location not found")
+    public void anExceptionIsThrownIndicatingLocationNotFound() {
+        assertNotNull(capturedException);
+        assertInstanceOf(IllegalArgumentException.class, capturedException);
+        assertTrue(capturedException.getMessage().contains("not found"));
+    }
+
+    @Then("the Charging Point {string} is also removed from the system")
+    public void theChargingPointIsAlsoRemovedFromTheSystem(String cpId) {
+        ChargingPointManager cpManager = ChargingPointManager.getInstance();
+        assertNull(cpManager.getChargingPointById(cpId));
     }
 
 }

@@ -27,3 +27,16 @@ Feature: Add New Location
     And the Location with Location ID "LOC-003" exists in the Charging Network
     And the Location with Location ID "LOC-003" has Name "West Station"
     And the Location with Location ID "LOC-003" has Address "455 Main Road"
+
+  Scenario: Error - Create location with duplicate ID
+    Given the following Locations exist:
+      | Location ID | Address       | Name          |
+      | LOC-DUP     | Test Street 1 | Test Station  |
+    When the Operator attempts to create a Location with duplicate ID "LOC-DUP"
+    Then an exception is thrown indicating location already exists
+
+  Scenario: Edge Case - Create location with minimal information
+    When the Operator creates new Locations with the following details:
+      | Location ID | Address | Name |
+      | LOC-MIN     | X       | Y    |
+    Then the Location with Location ID "LOC-MIN" exists in the Charging Network

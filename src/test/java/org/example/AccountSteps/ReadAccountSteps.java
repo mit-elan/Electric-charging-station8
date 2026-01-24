@@ -75,6 +75,25 @@ public class ReadAccountSteps {
         String actualOutput = accountManager.toString().trim();
         assertEquals(expectedOutput.trim(), actualOutput);
     }
+
+    @When("the customer requests the account with Customer ID {string}")
+    public void theCustomerRequestsTheAccountWithCustomerID(String customerId) {
+        retrievedAccount = accountManager.readAccount(customerId);
+    }
+
+    @Then("the retrieved account is null")
+    public void theRetrievedAccountIsNull() {
+        assertNull(retrievedAccount, "Expected account to be null");
+    }
+
+    @When("the customer requests all accounts")
+    public void theCustomerRequestsAllAccounts() {
+    }
+
+    @Then("the account list is empty")
+    public void theAccountListIsEmpty() {
+        assertTrue(accountManager.getAccounts().isEmpty(), "Account list should be empty");
+    }
 }
 
 
