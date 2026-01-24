@@ -1,6 +1,7 @@
 package org.example.LocationSteps;
 
 import io.cucumber.java.en.*;
+import org.example.ScenarioContext;
 import org.example.entities.Location;
 import org.example.managers.ChargingPointManager;
 import org.example.managers.LocationManager;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DeleteLocationSteps {
     private final LocationManager locationManager = LocationManager.getInstance();
-    private Exception capturedException;
+    //private Exception capturedException;
 
     @Given("the following Locations exist:")
     public void the_following_locations_exist(io.cucumber.datatable.DataTable dataTable) {
@@ -32,7 +33,7 @@ public class DeleteLocationSteps {
         try {
             locationManager.deleteLocation(locationID);
         } catch (Exception e) {
-            capturedException = e;
+            ScenarioContext.lastException = e;
         }
     }
 
@@ -47,16 +48,25 @@ public class DeleteLocationSteps {
         try {
             locationManager.deleteLocation(locationId);
         } catch (IllegalArgumentException e) {
-            capturedException = e;
+            ScenarioContext.lastException = e;
         }
     }
 
     @Then("an exception is thrown indicating location not found")
     public void anExceptionIsThrownIndicatingLocationNotFound() {
-        assertNotNull(capturedException);
-        assertInstanceOf(IllegalArgumentException.class, capturedException);
-        assertTrue(capturedException.getMessage().contains("not found"));
+        assertNotNull(ScenarioContext.lastException, "Expected an exception, but none was captured.");
+        assertInstanceOf(IllegalArgumentException.class, ScenarioContext.lastException);
+
+        String msg = ScenarioContext.lastException.getMessage();
+        assertNotNull(msg, "Exception message should not be null.");
+
+        String lower = msg.toLowerCase();
+        assertTrue(
+                lower.contains("not found") || lower.contains("does not exist") || lower.contains("unknown"),
+                "Expected message to indicate missing location, but was: " + msg
+        );
     }
+
 
     @Then("the Charging Point {string} is also removed from the system")
     public void theChargingPointIsAlsoRemovedFromTheSystem(String cpId) {

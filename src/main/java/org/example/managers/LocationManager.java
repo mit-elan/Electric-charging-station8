@@ -3,6 +3,8 @@ package org.example.managers;
 import org.example.entities.Location;
 import org.example.entities.Tariff;
 import org.example.enums.ChargingMode;
+import org.example.entities.ChargingPoint;
+import org.example.managers.ChargingPointManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,18 +49,22 @@ public class LocationManager {
     }
 
     public void deleteLocation(String locationId) {
-        Location locationToRemove = null;
-        for (Location location : locations) {
-            if (location.getLocationID().equals(locationId)) {
-                locationToRemove = location;
-                break;
-            }
+        Location locationToRemove = getLocation(locationId);
+
+        if (locationToRemove == null) {
+            throw new IllegalArgumentException("Location not found: " + locationId);
         }
-        if (locationToRemove != null) {
-            locations.remove(locationToRemove);
-        } else {
-            throw new IllegalArgumentException("No location found with Location ID" + locationId);
+
+        // 1) Delete all charging points belonging to this location from the global system
+        ChargingPointManager cpManager = ChargingPointManager.getInstance();
+
+        // Copy list to avoid concurrent modification
+        for (ChargingPoint cp : new ArrayList<>(locationToRemove.getChargingPoints())) {
+            cpManager.deleteChargingPoint(cp.getChargingPointID(), locationToRemove);
         }
+
+        // 2) Remove location from the system
+        locations.remove(locationToRemove);
     }
 
     public Location getLocationByID(String locationID) {

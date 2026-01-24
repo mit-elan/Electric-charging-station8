@@ -7,6 +7,7 @@ import org.example.entities.Account;
 import org.example.entities.ChargingPoint;
 import org.example.entities.ChargingSession;
 import org.example.entities.Invoice;
+import org.example.enums.OperatingStatus;
 import org.example.managers.*;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class EndChargingSessionSteps {
 
         assertNotNull(account, "Account must exist");
         assertNotNull(chargingPoint, "Charging Point must exist");
+        chargingPoint.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
         LocalDateTime now = LocalDateTime.now();
 

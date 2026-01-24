@@ -18,5 +18,5 @@ Feature: Update Location Address
     Then an exception is thrown indicating location not found
 
   Scenario: Edge Case - Update address to empty string
-    When the Operator attempts to update the address of Location "LOC-300" to ""
+    When the Operator attempts to update address of Location "LOC-300" to ""
     Then an exception is thrown indicating address cannot be empty

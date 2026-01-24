@@ -29,6 +29,7 @@ public class ChargingPoint {
         this.chargingPointID = chargingPointID;
         this.chargingPointName = (name == null || name.isBlank()) ? chargingPointID : name;
         this.chargingMode = mode;
+        this.operatingStatus = OperatingStatus.IN_OPERATION_FREE;
     }
 
     public Location getLocation() {
