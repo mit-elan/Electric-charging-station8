@@ -24,17 +24,16 @@ Feature: Read Invoices
       | 1       | 03-12-2025 10:00:00 | Highway Hub  | CP-DC-1        | DC   | 20       | 30.00       | 15.00 |
       | 2       | 02-01-2026 08:30:00 | Main Station | CP-AC-1        | AC   | 60       | 11.00       | 5.50  |
 
-
-
     When the customer with ID "CUST-1" views their invoice overview
     Then the invoice overview shows:
     """
-    Invoice Overview for Customer: CUST-1
+    Invoice Overview for Customer: Clara White
+    Customer ID:CUST-1
 
     01-11-2025 14:42:00 | Top-up | Amount: 50,00
-    03-12-2025 10:00:00 | Charging Session | Item No 1 | Location: Highway Hub | CP: CP-DC-1 | Mode: DC | Duration: 20 minutes | Energy used: 30,00 kWh | Price: 15,00
+    03-12-2025 10:00:00 | Charging Session | Invoice Item No: 1 | Location Name: Highway Hub | Charging Point Name: CP-DC-1 | Mode: DC | Duration: 20 minutes | Energy used: 30,00 kWh | Price: 15,00
     03-12-2025 11:30:00 | Top-up | Amount: 30,50
-    02-01-2026 08:30:00 | Charging Session | Item No 2 | Location: Main Station | CP: CP-AC-1 | Mode: AC | Duration: 60 minutes | Energy used: 11,00 kWh | Price: 5,50
+    02-01-2026 08:30:00 | Charging Session | Invoice Item No: 2 | Location Name: Main Station | Charging Point Name: CP-AC-1 | Mode: AC | Duration: 60 minutes | Energy used: 11,00 kWh | Price: 5,50
 
     Outstanding Balance: 60,00
     """

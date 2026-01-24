@@ -63,8 +63,8 @@ public class CreateChargingPointSteps {
         }
     }
 
-    @Then("an exception is thrown indicating location not found")
-    public void anExceptionIsThrownIndicatingLocationNotFound() {
+    @Then("an exception is thrown because the location does not exist")
+    public void anExceptionIsThrownBecauseLocationDoesNotExist() {
         assertNotNull(caughtException);
     }
 

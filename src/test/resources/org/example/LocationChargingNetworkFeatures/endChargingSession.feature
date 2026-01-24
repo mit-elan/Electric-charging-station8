@@ -28,9 +28,10 @@ Feature: End Charging Session
       | AC   | 0.35          | 0.05             |
       | DC   | 0.60          | 0.10             |
 
-    And an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"
+#    And an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"
 
   Scenario: Successfully end a charging session
+    Given an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"
     When the customer disconnects the vehicle from Charging Point "CP-1"
     Then the charging session with ID "CS-1" is stopped using 50.00 kWh over 20 minutes
     And the charging session is stored in the ChargingSessionManager

@@ -43,6 +43,7 @@ public class StartChargingSessionSteps {
         sessionManager.createChargingSession(account, cp);
     }
 
+
     @Then("a charging session exists for Customer {string} at Charging Point {string}")
     public void verify_session_exists(String custId, String cpId) {
         // 1. Get the list from the instance (not the class)
@@ -95,12 +96,5 @@ public class StartChargingSessionSteps {
         assertTrue(caughtException.getMessage().contains("not available"));
     }
 
-    public ChargingPointManager getChargingPointManager() {
-        return chargingPointManager;
-    }
-
-    public void setChargingPointManager(ChargingPointManager chargingPointManager) {
-        this.chargingPointManager = chargingPointManager;
-    }
 }
 

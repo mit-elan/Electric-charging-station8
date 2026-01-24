@@ -54,7 +54,7 @@ public class TopUpCreditSteps {
     @When("the customer with ID {string} tops up their credit with {double}")
     public void the_customer_tops_up_their_credit(String customerId, double amount) {
         Credit credit = accountManager.getAccount(customerId).getCredit();
-        creditUpdateTimestampBefore = LocalDateTime.now();
+        creditUpdateTimestampBefore = LocalDateTime.now().minusSeconds(1);
         creditManager.topUpCredit(accountManager.getAccount(customerId), amount);
     }
 

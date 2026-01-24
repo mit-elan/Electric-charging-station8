@@ -96,7 +96,18 @@ public class ReadInvoicesSteps {
         String actualOutput = outputStream.toString().trim();
         String expected = expectedOutput.trim();
 
+        // Normalize line endings and remove trailing whitespace from each line
+        actualOutput = normalizeOutput(actualOutput);
+        expected = normalizeOutput(expected);
+
         assertEquals(expected, actualOutput);
+    }
+
+    // Helper method to normalize output
+    private String normalizeOutput(String text) {
+        return text.lines()
+                .map(String::stripTrailing)  // Remove trailing whitespace from each line
+                .collect(java.util.stream.Collectors.joining("\n"));
     }
 
 

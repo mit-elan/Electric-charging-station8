@@ -5,6 +5,7 @@ import io.cucumber.java.en.When;
 import org.example.entities.Location;
 import org.example.managers.LocationManager;
 import org.junit.jupiter.api.Assertions;
+import org.example.ScenarioContext;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +15,7 @@ public class UpdateLocationAddressSteps {
 
     private final LocationManager locationManager = LocationManager.getInstance();
 
-    private Exception caughtException;
+    //private Exception caughtException;
 
     @When("the Operator updates the address of Location {string} to {string}")
     public void the_operator_updates_the_address_of_location(
@@ -29,14 +30,14 @@ public class UpdateLocationAddressSteps {
         try {
             locationManager.updateLocationAddress(locationId, newAddress);
         } catch (IllegalArgumentException e) {
-            caughtException = e;
+            ScenarioContext.lastException = e;
         }
     }
 
     @Then("an exception is thrown indicating address cannot be empty")
     public void anExceptionIsThrownIndicatingAddressCannotBeEmpty() {
-        assertNotNull(caughtException);
-        assertInstanceOf(IllegalArgumentException.class, caughtException);
-        assertTrue(caughtException.getMessage().contains("cannot be null or empty"));
+        assertNotNull(ScenarioContext.lastException);
+        assertInstanceOf(IllegalArgumentException.class, ScenarioContext.lastException);
+        assertTrue(ScenarioContext.lastException.getMessage().contains("cannot be null or empty"));
     }
 }

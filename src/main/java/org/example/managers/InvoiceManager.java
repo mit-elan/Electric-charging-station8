@@ -94,6 +94,7 @@ public class InvoiceManager {
         ChargingPoint fakeChargingPoint = new ChargingPoint(
                 fakeLocation,
                 chargingPointId,
+                chargingPointId,
                 chargingMode
         );
 

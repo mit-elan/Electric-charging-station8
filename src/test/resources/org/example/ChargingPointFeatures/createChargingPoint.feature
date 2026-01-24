@@ -38,7 +38,7 @@ Feature: Create Charging Point
 
   Scenario: Error - Create Charging Point at non-existing Location
     When the Operator attempts to create a Charging Point with ID "CP-ERROR" at non-existing Location "LOC-999"
-    Then an exception is thrown indicating location not found
+    Then an exception is thrown because the location does not exist
 
   Scenario: Edge Case - Create Charging Point with duplicate ID
     Given the Operator creates a Charging Point with ID "CP-DUP", mode "AC", at Location "LOC-1"

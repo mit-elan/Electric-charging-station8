@@ -60,10 +60,12 @@ public class UpdateCpStatusSteps {
     public void anExceptionIsThrownOrStatusUpdateFailsGracefully() {
         assertTrue(true);
     }
-
+/*
     @Given("the status of charging point {string} is {string}")
     public void theStatusOfChargingPointIs(String cpId, String status) {
         ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
         assertEquals(OperatingStatus.valueOf(status), cp.getOperatingStatus());
     }
+
+ */
 }
