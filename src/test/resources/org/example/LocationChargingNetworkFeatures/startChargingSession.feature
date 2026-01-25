@@ -31,9 +31,9 @@ Feature: Start Charging Session
     And the Charging Point "CP-1" is InOperationFree
 
   Scenario: Successfully start a charging session
-    When the Customer "CUST-1" physically connects their car to Charging Point "CP-1"
-    Then the Customer "CUST-1" starts a charging session at Charging Point "CP-1"
-    And a charging session exists for Customer "CUST-1" at Charging Point "CP-1"
+    When the Customer "CUST-1" physically connects their car to Charging Point "CP-1" at "01-01-2026 10:00"
+    And the Customer "CUST-1" starts a charging session at Charging Point "CP-1" at "01-01-2026 10:00"
+    Then a charging session exists for Customer "CUST-1" at Charging Point "CP-1"
     And the Charging Point "CP-1" is marked as Occupied
 
   Scenario: Error - Start session with insufficient credit
@@ -41,12 +41,12 @@ Feature: Start Charging Session
       | Customer ID | Initial Credit |
       | CUST-POOR   | 0.00           |
     And the Charging Point "CP-1" is InOperationFree
-    When the Customer "CUST-POOR" physically connects their car to Charging Point "CP-1"
-    And the Customer "CUST-POOR" attempts to start a charging session at Charging Point "CP-1"
+    When the Customer "CUST-POOR" physically connects their car to Charging Point "CP-1" at "01-01-2026 10:00"
+    And the Customer "CUST-POOR" attempts to start a charging session at Charging Point "CP-1" at "01-01-2026 11:00"
     Then an exception is thrown indicating insufficient credit
 
   Scenario: Edge Case - Start session at charging point that is out of order
-    Given the operator sets the status of charging point "CP-2" to "OUT_OF_ORDER"
-    When the Customer "CUST-1" physically connects their car to Charging Point "CP-2"
-    And the Customer "CUST-1" attempts to start a charging session at Charging Point "CP-2"
+    Given the operator sets the status of charging point "CP-2" to "OUT_OF_ORDER" at "01-01-2026 08:00"
+    When the Customer "CUST-1" physically connects their car to Charging Point "CP-2" at "01-01-2026 10:00"
+    And the Customer "CUST-1" attempts to start a charging session at Charging Point "CP-2" at "01-01-2026 11:00"
     Then an exception is thrown indicating charging point not available

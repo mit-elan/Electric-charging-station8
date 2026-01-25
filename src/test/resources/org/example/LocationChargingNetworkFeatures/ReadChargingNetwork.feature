@@ -32,7 +32,7 @@ Feature: Read Charging Network
       | LOC-2      | CP-DC-2         | DC   |
       | LOC-2      | CP-DC-3         | DC   |
 
-    And the operator sets the status of charging point "CP-AC-1" to "OUT_OF_ORDER"
+    And the operator sets the status of charging point "CP-AC-1" to "OUT_OF_ORDER" at "01-01-2026 09:00"
     And a charging session exists at Charging Point "CP-DC-2"
 
     When the customer reads the Charging Network

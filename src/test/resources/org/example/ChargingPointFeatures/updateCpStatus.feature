@@ -22,14 +22,14 @@ Feature: Update charging point status
     And the status of charging point "CP-002" is "IN_OPERATION_FREE"
 
   Scenario: Operator sets a charging point to Out of Order
-    When the operator sets the status of charging point "CP-001" to "OUT_OF_ORDER"
+    When the operator sets the status of charging point "CP-001" to "OUT_OF_ORDER" at "01-01-2026 08:00"
     Then the status of charging point "CP-001" is "OUT_OF_ORDER"
 
   Scenario: Charging point is Occupied during an active charging session
-    When the Customer "CUST-1" physically connects their car to Charging Point "CP-001"
-    Then the Customer "CUST-1" starts a charging session at Charging Point "CP-001"
-    And a charging session exists for Customer "CUST-1" at Charging Point "CP-001"
-    Then the status of charging point "CP-001" is "OCCUPIED"
+    When the Customer "CUST-1" physically connects their car to Charging Point "CP-001" at "01-01-2026 09:00"
+    When the Customer "CUST-1" starts a charging session at Charging Point "CP-001" at "01-01-2026 09:00"
+    Then a charging session exists for Customer "CUST-1" at Charging Point "CP-001"
+    And the status of charging point "CP-001" is "OCCUPIED"
 
   Scenario: Error - Update status of non-existing charging point
     When the operator attempts to set status of non-existing charging point "CP-999" to "OUT_OF_ORDER"
@@ -37,5 +37,5 @@ Feature: Update charging point status
 
   Scenario: Edge Case - Set charging point to same status it already has
     Given the status of charging point "CP-001" is "IN_OPERATION_FREE"
-    When the operator sets the status of charging point "CP-001" to "IN_OPERATION_FREE"
+    When the operator sets the status of charging point "CP-001" to "IN_OPERATION_FREE" at "01-01-2026 18:00"
     Then the status of charging point "CP-001" is "IN_OPERATION_FREE"

@@ -30,10 +30,11 @@ public class UpdateCpStatusSteps {
         );
     }
 
-    @When("the operator sets the status of charging point {string} to {string}")
+    @When("the operator sets the status of charging point {string} to {string} at {string}")
     public void the_operator_sets_the_status_of_charging_point_to(
             String chargingPointId,
-            String newStatus
+            String newStatus,
+            String date
     ) {
 
         ChargingPoint chargingPoint =

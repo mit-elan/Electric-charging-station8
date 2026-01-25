@@ -28,7 +28,6 @@ Feature: End Charging Session
       | AC   | 0.35          | 0.05             |
       | DC   | 0.60          | 0.10             |
 
-#    And an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"
 
   Scenario: Successfully end a charging session
     Given an active charging session with ID "CS-1" exists for Customer "CUST-1" at Charging Point "CP-1"

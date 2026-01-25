@@ -42,13 +42,11 @@ public class EndChargingSessionSteps {
         assertNotNull(chargingPoint, "Charging Point must exist");
         chargingPoint.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
 
-        LocalDateTime now = LocalDateTime.now();
-
         activeSession = chargingSessionManager.createChargingSessionWithId(
                 sessionId,
                 account,
                 chargingPoint,
-                now
+                LocalDateTime.now()
         );
 
         assertNotNull(activeSession, "Charging session should be created");

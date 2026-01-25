@@ -5,7 +5,10 @@ import org.example.entities.*;
 import org.example.managers.*;
 import org.example.enums.OperatingStatus;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +17,7 @@ public class StartChargingSessionSteps {
     // Managers
     private final AccountManager accountManager = AccountManager.getInstance();
     private final ChargingSessionManager sessionManager = ChargingSessionManager.getInstance();
-    private ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
+    private final ChargingPointManager chargingPointManager = ChargingPointManager.getInstance();
 
     private Exception caughtException;
 
@@ -24,10 +27,11 @@ public class StartChargingSessionSteps {
         cp.updateOperatingStatus(OperatingStatus.IN_OPERATION_FREE);
     }
 
-    @When("the Customer {string} physically connects their car to Charging Point {string}")
+    @When("the Customer {string} physically connects their car to Charging Point {string} at {string}")
     public void the_customer_physically_connects_their_car_to_charging_point(
             String customerId,
-            String chargingPointId
+            String chargingPointId,
+            String date
     ) {
         ChargingPoint cp =
                 chargingPointManager.getChargingPointById(chargingPointId);
@@ -36,11 +40,15 @@ public class StartChargingSessionSteps {
     }
 
 
-    @When("the Customer {string} starts a charging session at Charging Point {string}")
-    public void start_session(String custId, String cpId) {
+    @When("the Customer {string} starts a charging session at Charging Point {string} at {string}")
+    public void start_session(String custId, String cpId, String date) {
         Account account = accountManager.getAccount(custId);
         ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
-        sessionManager.createChargingSession(account, cp);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
+        sessionManager.createChargingSession(account, cp, dateTime);
     }
 
 
@@ -71,12 +79,15 @@ public class StartChargingSessionSteps {
         assertEquals(OperatingStatus.OCCUPIED, cp.getOperatingStatus());
     }
 
-    @When("the Customer {string} attempts to start a charging session at Charging Point {string}")
-    public void theCustomerAttemptsToStartAChargingSession(String custId, String cpId) {
+    @When("the Customer {string} attempts to start a charging session at Charging Point {string} at {string}")
+    public void theCustomerAttemptsToStartAChargingSession(String custId, String cpId, String date) {
         try {
             Account account = accountManager.getAccount(custId);
             ChargingPoint cp = chargingPointManager.getChargingPointById(cpId);
-            sessionManager.createChargingSession(account, cp);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
+            sessionManager.createChargingSession(account, cp, dateTime);
         } catch (IllegalStateException e) {
             caughtException = e;
         }

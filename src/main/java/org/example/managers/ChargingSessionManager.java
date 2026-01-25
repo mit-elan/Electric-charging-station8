@@ -32,13 +32,13 @@ public class ChargingSessionManager {
     }
 
 
-    public void createChargingSession(Account account, ChargingPoint chargingPoint) {
+    public void createChargingSession(Account account, ChargingPoint chargingPoint, LocalDateTime dateTime) {
         Location location = locationManager.getLocationByChargingPoint(
                 chargingPoint.getChargingPointID()
         );
 
         Tariff applicableTariff = location.readTariffAt(
-                LocalDateTime.now(),
+                dateTime,
                 chargingPoint.getMode()
         );
 
@@ -67,7 +67,7 @@ public class ChargingSessionManager {
 
         ChargingSession session = new ChargingSession(
                 "CS-" + (++ChargingSessionCounter),
-                LocalDateTime.now(),
+                dateTime,
                 chargingPoint
         );
 
