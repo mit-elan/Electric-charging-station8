@@ -169,7 +169,7 @@ public class InvoiceManager {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         for (Invoice invoice : customerInvoices) {
             String line = String.format(
-                    "Charging Session | Invoice Item No: %s | Location Name: %s | Charging Point Name: %s | Mode: %s | Duration: %d minutes | Energy used: %.2f kWh | Price: %.2f",
+                    "Charging Session | Invoice Item No: %s | Location Name: %s | Charging Point Name: %s | Mode: %s | Duration: %d minutes | Energy used: %.2f kWh | Price: €%.2f",
                     invoice.getInvoiceItemNumber(),
                     invoice.getLocationName(),
                     invoice.getChargingSession().getChargingPoint().getChargingPointName(),
@@ -184,7 +184,7 @@ public class InvoiceManager {
         // 3b. Add top-ups
         for (Credit.TopUpEntry topUp : topUps) {
             String line = String.format(
-                    "Top-up | Amount: %.2f",
+                    "Top-up | Amount: €%.2f",
                     topUp.getAmount()
             );
             timeline.add(Map.entry(topUp.getDateTime(), line));
@@ -200,7 +200,7 @@ public class InvoiceManager {
 
         // 6. Print outstanding balance
         System.out.println();
-        System.out.println("Outstanding Balance: " + String.format("%.2f", account.getCredit().getAmount()));
+        System.out.println("Outstanding Balance: €" + String.format("%.2f", account.getCredit().getAmount()));
     }
 
 
@@ -217,10 +217,10 @@ public class InvoiceManager {
         // 2. Add all invoices to timeline
         for (Invoice invoice : invoices) {
             String line = String.format(
-                    "%s | Charging Session %s | Item No %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: %s",
+                    "%s | Invoice Item No %s | Customer ID: %s | Location: %s | CP: %s | Mode: %s | Duration: %d minutes | Energy used: %s kWh | Price: €%s",
                     invoice.getStartTime().format(europeanFormatter),
                     invoice.getInvoiceItemNumber(),
-                    invoice.getInvoiceItemNumber(),
+                    invoice.getAccount().getCustomerID(),
                     invoice.getLocationName(),
                     invoice.getChargingPointID(),
                     invoice.getChargingMode(),
@@ -242,9 +242,10 @@ public class InvoiceManager {
                     LocalDateTime dateTime = LocalDateTime.parse(parts[2].split(": ")[1], europeanFormatter);
 
                     String line = String.format(
-                            "%s | Top-up | Customer: %s | Amount: %s",
+                            "%s | Top-up | Customer ID: %s | Customer Name: %s | Amount: €%s",
                             dateTime.format(europeanFormatter),
                             account.getCustomerID(),
+                            account.getName(),
                             String.format("%.2f", amount).replace('.', ',')  // European decimal
                     );
 
@@ -268,7 +269,7 @@ public class InvoiceManager {
             if (account.getCredit() != null) {
                 String formattedBalance = String.format("%.2f", account.getCredit().getAmount()).replace('.', ',');
                 System.out.println(
-                        "Customer ID: " + account.getCustomerID() + "| Customer Name: "+ account.getName() + " | Outstanding Balance: " + formattedBalance
+                        "Customer ID: " + account.getCustomerID() + "| Customer Name: "+ account.getName() + " | Outstanding Balance: €" + formattedBalance
                 );
             }
         }

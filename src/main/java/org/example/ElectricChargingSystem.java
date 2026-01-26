@@ -142,15 +142,20 @@ public class ElectricChargingSystem {
         System.out.println("\n=== Top-Ups and Sessions between Jan 1st - Jan 26th 2026 ===");
 
         // Everyone EXCEPT Customer 1 tops up
+        System.out.println("Every customer tops up their credit except Bob!");
+        System.out.println("Alice tops up her credit by 100€ on 10.01.2026");
         creditManager.addManualTopUp(cust2, 100.0, "10-01-2026 10:00:00");
+        System.out.println("Charlie tops up his credit by 120€ on 01.01.2026");
         creditManager.addManualTopUp(cust3, 120.0, "01-01-2026 09:00:00");
+        System.out.println("Diane tops up her credit by 150€ on 15.01.2026");
         creditManager.addManualTopUp(cust4, 150.0, "15-01-2026 14:00:00");
+        System.out.println("Eve tops up her credit by 20€ on 20.01.2026");
         creditManager.addManualTopUp(cust5, 20.0, "20-01-2026 18:30:00");
 
         // Alice (Cust 2): Credit -> Charge -> Result
         System.out.println("\n--- Case 1: Alice (Normal Flow) ---");
-        System.out.println("Alice' credit before: €" + cust2.getCredit().getAmount());
-        System.out.println("Alice starts charging session");
+        System.out.println("Alice' credit: €" + cust2.getCredit().getAmount());
+        System.out.println("Alice starts charging session on 10.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-1", cust2, chargingPointManager.getChargingPointById("CP-4"), LocalDateTime.of(2026, 1, 11, 10, 0));
         System.out.println("Alice Ends the charging session");
         chargingSessionManager.endChargingSession("PAST-1", 20.0, 30);
@@ -160,12 +165,12 @@ public class ElectricChargingSystem {
         // Charlie (Cust 3): Charge -> Charge again
         System.out.println("\n--- Case 2: Charlie (Double Charge) ---");
         System.out.println("Charlie's credit before: €" + cust3.getCredit().getAmount());
-        System.out.println("Charlie starts Charging session");
+        System.out.println("Charlie starts Charging session on 13.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-2", cust3, chargingPointManager.getChargingPointById("CP-5"), LocalDateTime.of(2026, 1, 13, 13, 0));
         System.out.println("Charlie Ends the charging session");
         chargingSessionManager.endChargingSession("PAST-2", 10.0, 15);
         System.out.println("Credit after: €" + cust3.getCredit().getAmount());
-        System.out.println("Charlie Starts another session");
+        System.out.println("Charlie Starts another session on 14.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-3", cust3, chargingPointManager.getChargingPointById("CP-6"), LocalDateTime.of(2026, 1, 14, 15, 0));
         System.out.println("Charlie Ends the charging session");
         chargingSessionManager.endChargingSession("PAST-3", 5.0, 10);
@@ -174,15 +179,15 @@ public class ElectricChargingSystem {
         // Diana (Cust 4): Charge -> Top Up -> Charge again
         System.out.println("\n--- Case 3: Diana (Charge, top-up, charge again) ---");
         System.out.println("Diana's credit before: €" + cust4.getCredit().getAmount());
-        System.out.println("Diana's starts Charging session");
+        System.out.println("Diana's starts Charging session on 15.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-4", cust4, chargingPointManager.getChargingPointById("CP-7"), LocalDateTime.of(2026, 1, 16, 8, 0));
         System.out.println("Diana Ends charging session");
         chargingSessionManager.endChargingSession("PAST-4", 80.0, 120);
-        System.out.println("Credit after session 1: " + cust4.getCredit().getAmount());
+        System.out.println("Credit after session 1: €" + cust4.getCredit().getAmount());
         System.out.println("Diana Tops up her credit...");
         creditManager.addManualTopUp(cust4, 50.0, "17-01-2026 12:00:00");
-        System.out.println("Credit after Top-Up: " + cust4.getCredit().getAmount());
-        System.out.println("Diana Starts another session: ...");
+        System.out.println("Credit after Top-Up: €" + cust4.getCredit().getAmount());
+        System.out.println("Diana Starts another session on 18.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-5", cust4, chargingPointManager.getChargingPointById("CP-8"), LocalDateTime.of(2026, 1, 18, 19, 0));
         System.out.println("Diana Ends the charging session\n");
         chargingSessionManager.endChargingSession("PAST-5", 30.0, 45);
@@ -194,7 +199,7 @@ public class ElectricChargingSystem {
         System.out.println("\n=== Scenario: Bob tries to charge without credit ===");
         ChargingPoint cp1 = chargingPointManager.getChargingPointById("CP-25");
         try {
-            System.out.println("Attempting to start session 'CS-1' for Bob...");
+            System.out.println("Attempting to start session for Bob...");
             // This will fail because Bob has 0.0 credit
             chargingSessionManager.createChargingSessionWithId(
                     "CS-1",
@@ -208,7 +213,7 @@ public class ElectricChargingSystem {
 
             // 2. Bob tops up his account
             System.out.println("\n[RECOVERY] Bob is topping up his account with 50€...");
-            creditManager.addManualTopUp(cust1, 50.0, "23-01-2026 15:00:00");
+            creditManager.topUpCredit(cust1, 50);
         }
 
         // 4. Now try again - this time it will succeed
@@ -265,7 +270,7 @@ public class ElectricChargingSystem {
         // MORE CUSTOMER ACCOUNT TOP UPS AND MORE CHARGING SESSIONS
         // =======================
 
-        System.out.println("More account top ups and charging sessions are happening...");
+        System.out.println("More account top ups and charging sessions are happening...\n");
 
         // Alice tops up again and charges
         creditManager.addManualTopUp(cust1, 60, "02-01-2026 12:00:00");
@@ -279,7 +284,7 @@ public class ElectricChargingSystem {
 
         // Charlie charges twice without top-up
         creditManager.addManualTopUp(cust4, 100, "04-01-2026 14:45:00");
-        chargingSessionManager.createChargingSessionWithId("CS-5", cust3, chargingPointManager.getChargingPointById("CP-5"), LocalDateTime.of(2026, 1, 28, 10, 0));
+        chargingSessionManager.createChargingSessionWithId("CS-5", cust3, chargingPointManager.getChargingPointById("CP-5"), LocalDateTime.of(2026, 1, 25, 10, 0));
         chargingSessionManager.endChargingSession("CS-5", 45.0, 25);
 
         chargingSessionManager.createChargingSessionWithId("CS-6", cust3, chargingPointManager.getChargingPointById("CP-6"), LocalDateTime.of(2026, 1, 18, 10, 0));
@@ -299,9 +304,9 @@ public class ElectricChargingSystem {
         // =======================
         // READ INVOICE
         // =======================
-        System.out.println("After several top-ups and charging sessions, Bob wants to see his invoice history again");
+        System.out.println("After several top-ups and charging sessions, Eve wants to see his invoice history");
         System.out.println();
-        invoiceManager.readFinancialHistoryForAccount(cust1);
+        invoiceManager.readFinancialHistoryForAccount(cust5);
 
         // =======================
         // ADMIN READ INVOICES
