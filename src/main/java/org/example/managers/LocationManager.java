@@ -4,7 +4,6 @@ import org.example.entities.Location;
 import org.example.entities.Tariff;
 import org.example.enums.ChargingMode;
 import org.example.entities.ChargingPoint;
-import org.example.managers.ChargingPointManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

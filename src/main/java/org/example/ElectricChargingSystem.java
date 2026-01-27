@@ -9,8 +9,10 @@ import org.example.enums.OperatingStatus;
 import org.example.managers.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.example.enums.ChargingMode.AC;
+import static org.example.enums.ChargingMode.DC;
 
 public class ElectricChargingSystem {
 
@@ -59,61 +61,61 @@ public class ElectricChargingSystem {
 
 
         locationManager.updateLocationPricing("LOC-1", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-1", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-1", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-2", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-2", ChargingMode.DC, 0.65, 0.15, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-2", DC, 0.65, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-3", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-3", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-3", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-4", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-4", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-4", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-5", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-5", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-5", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-6", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-6", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-7", AC, 0.55, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-7", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-6", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-7", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-7", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-8", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-8", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-8", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-9", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-9", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-9", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
         locationManager.updateLocationPricing("LOC-10", AC, 0.35, 0.05, LocalDateTime.of(2026, 1, 1, 8, 0));
-        locationManager.updateLocationPricing("LOC-10", ChargingMode.DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
+        locationManager.updateLocationPricing("LOC-10", DC, 0.60, 0.10, LocalDateTime.of(2026, 1, 1, 8, 0));
 
         System.out.println("Create charging points...\n");
         chargingPointManager.createChargingPointWithName(loc1, "CP-1", "Charging Point 1", AC);
-        chargingPointManager.createChargingPointWithName(loc1, "CP-2", "Charging Point 2", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc1, "CP-2", "Charging Point 2", DC);
 
         chargingPointManager.createChargingPointWithName(loc2, "CP-3", "Charging Point 1", AC);
-        chargingPointManager.createChargingPointWithName(loc2, "CP-4", "Charging Point 2", ChargingMode.DC);
-        chargingPointManager.createChargingPointWithName(loc2, "CP-5", "Charging Point 3", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc2, "CP-4", "Charging Point 2", DC);
+        chargingPointManager.createChargingPointWithName(loc2, "CP-5", "Charging Point 3", DC);
 
         chargingPointManager.createChargingPointWithName(loc3, "CP-6", "Charging Point 1", AC);
         chargingPointManager.createChargingPointWithName(loc3, "CP-7", "Charging Point 2", AC);
 
-        chargingPointManager.createChargingPointWithName(loc4, "CP-8", "Charging Point 1", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc4, "CP-8", "Charging Point 1", DC);
         chargingPointManager.createChargingPointWithName(loc4, "CP-9", "Charging Point 2", AC);
         chargingPointManager.createChargingPointWithName(loc4, "CP-10", "Charging Point 3", AC);
 
         chargingPointManager.createChargingPointWithName(loc5, "CP-11", "Charging Point 1", AC);
         chargingPointManager.createChargingPointWithName(loc5, "CP-12", "Charging Point 2", AC);
 
-        chargingPointManager.createChargingPointWithName(loc6, "CP-13", "Charging Point 1", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc6, "CP-13", "Charging Point 1", DC);
         chargingPointManager.createChargingPointWithName(loc6, "CP-14", "Charging Point 2", AC);
-        chargingPointManager.createChargingPointWithName(loc6, "CP-15", "Charging Point 3", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc6, "CP-15", "Charging Point 3", DC);
 
-        chargingPointManager.createChargingPointWithName(loc7, "CP-16", "Charging Point 1", ChargingMode.DC);
-        chargingPointManager.createChargingPointWithName(loc7, "CP-17", "Charging Point 2", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc7, "CP-16", "Charging Point 1", DC);
+        chargingPointManager.createChargingPointWithName(loc7, "CP-17", "Charging Point 2", DC);
         chargingPointManager.createChargingPointWithName(loc7, "CP-18", "Charging Point 3", AC);
 
-        chargingPointManager.createChargingPointWithName(loc8, "CP-19", "Charging Point 1", ChargingMode.DC);
-        chargingPointManager.createChargingPointWithName(loc8, "CP-20", "Charging Point 2", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc8, "CP-19", "Charging Point 1", DC);
+        chargingPointManager.createChargingPointWithName(loc8, "CP-20", "Charging Point 2", DC);
         chargingPointManager.createChargingPointWithName(loc8, "CP-21", "Charging Point 3", AC);
 
-        chargingPointManager.createChargingPointWithName(loc9, "CP-22", "Charging Point 1", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc9, "CP-22", "Charging Point 1", DC);
         chargingPointManager.createChargingPointWithName(loc9, "CP-23", "Charging Point 2", AC);
         chargingPointManager.createChargingPointWithName(loc9, "CP-24", "Charging Point 3", AC);
 
-        chargingPointManager.createChargingPointWithName(loc10, "CP-25", "Charging Point 1", ChargingMode.DC);
+        chargingPointManager.createChargingPointWithName(loc10, "CP-25", "Charging Point 1", DC);
         chargingPointManager.createChargingPointWithName(loc10, "CP-26", "Charging Point 2", AC);
         chargingPointManager.createChargingPointWithName(loc10, "CP-27", "Charging Point 3", AC);
 
@@ -155,7 +157,7 @@ public class ElectricChargingSystem {
         // Alice (Cust 2): Credit -> Charge -> Result
         System.out.println("\n--- Case 1: Alice (Normal Flow) ---");
         System.out.println("Alice' credit: €" + cust2.getCredit().getAmount());
-        System.out.println("Alice starts charging session on 10.01.2026");
+        System.out.println("Alice starts charging session on 11.01.2026");
         chargingSessionManager.createChargingSessionWithId("PAST-1", cust2, chargingPointManager.getChargingPointById("CP-4"), LocalDateTime.of(2026, 1, 11, 10, 0));
         System.out.println("Alice Ends the charging session");
         chargingSessionManager.endChargingSession("PAST-1", 20.0, 30);
@@ -234,8 +236,8 @@ public class ElectricChargingSystem {
         // UPDATE CHARGING POINTS
         // =======================
 
-        System.out.println("\n=== During the Charging Session the Operator updates the OperatingStatus of the Charging Points with ID: LOC-1 and LOC-2 ===");
-        System.out.println("=== And the Operator updates the Pricing of Charging Points with ID: LOC-3 and LOC-4 ===");
+        System.out.println("\n=== During the Charging Session the Operator updates the OperatingStatus of the Charging Points at the Locations with ID: LOC-1 and LOC-2 ===");
+        System.out.println("=== And the Operator updates the Pricing the Locations with ID: LOC-3 and LOC-4 ===");
 
         ChargingPoint cp2 = chargingPointManager.getChargingPointById("CP-2");
         cp2.updateOperatingStatus(OperatingStatus.OUT_OF_ORDER);
@@ -243,9 +245,14 @@ public class ElectricChargingSystem {
         ChargingPoint cp3 = chargingPointManager.getChargingPointById("CP-3");
         cp3.updateOperatingStatus(OperatingStatus.OUT_OF_ORDER);
 
-        locationManager.updateLocationPricing("LOC-3", AC, 0.40, 0.15, LocalDateTime.of(2026, 1, 27, 18, 0));
-        locationManager.updateLocationPricing("LOC-3", AC, 0.30, 0.05, LocalDateTime.of(2026, 1, 27, 18, 0));
-        locationManager.updateLocationPricing("LOC-3", AC, 0.30, 0.10, LocalDateTime.of(2026, 1, 27, 18, 0));
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        String formatted = now.format(formatter);
+
+
+        locationManager.updateLocationPricing("LOC-3", AC, 0.40, 0.15, LocalDateTime.parse(formatted));
+        locationManager.updateLocationPricing("LOC-4", AC, 0.30, 0.05, LocalDateTime.parse(formatted));
+        locationManager.updateLocationPricing("LOC-4", DC, 0.45, 0.20, LocalDateTime.parse(formatted));
 
         // =======================
         // MONITOR CHARGING NETWORK AGAIN TO CHECK CHARGING POINT STATUS OUT_OF_ORDER AND OCCUPIED
@@ -270,7 +277,7 @@ public class ElectricChargingSystem {
         // MORE CUSTOMER ACCOUNT TOP UPS AND MORE CHARGING SESSIONS
         // =======================
 
-        System.out.println("More account top ups and charging sessions are happening...\n");
+        System.out.println("\nMore account top ups and charging sessions are happening...\n");
 
         // Alice tops up again and charges
         creditManager.addManualTopUp(cust1, 60, "02-01-2026 12:00:00");
@@ -300,18 +307,10 @@ public class ElectricChargingSystem {
         chargingSessionManager.createChargingSessionWithId("CS-8", cust5, chargingPointManager.getChargingPointById("CP-8"), LocalDateTime.of(2026, 1, 14, 10, 0));
         chargingSessionManager.endChargingSession("CS-8", 25.0, 15);
 
-
-        // =======================
-        // READ INVOICE
-        // =======================
-        System.out.println("After several top-ups and charging sessions, Eve wants to see his invoice history");
-        System.out.println();
-        invoiceManager.readFinancialHistoryForAccount(cust5);
-
         // =======================
         // ADMIN READ INVOICES
         // =======================
-        System.out.println("\nFinally the Operator Views all Invoices and Top-ups ever created:\n");
+        System.out.println("Finally the Operator Views all Invoices and Top-ups ever created:\n");
         InvoiceManager.getInstance().readGlobalFinancialHistory();
 
         System.out.println("\n=== System demonstration finished ===");
